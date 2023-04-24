@@ -1,33 +1,33 @@
 .. _install-tkgs:
 
-======================================
-Install Kubeflow on vSphere with Tanzu
-======================================
+===================================
+Install vSphere Enterprise Kubeflow
+===================================
 
-This document will guide you to install Kubeflow on vSphere with Tanzu.
+This section guides you to install vSphere Enterprise Kubeflow.
 
 .. note::
-	In this guide, we will install Kubeflow 1.6.1. Configurations may be slightly different for other versions.
+	In this section, we install vSphere Enterprise Kubeflow 1.6.1. Configurations are slightly different for other versions.
 
 Prerequisites
 =============
 
-Adhere to the following requirements before deploying Kubeflow package on TKGS clusters.
+Adhere to the following requirements before deploying vSphere Enterprise Kubeflow package on Tanzu Kubernetes Grid Service (TKGS) clusters.
 
-For the deployment on vSphere with Tanzu (TKGS), Kubeflow will be installed on a Tanzu Kubernetes Cluster (TKC). So before the deployment of Kubeflow, you should get vSphere and TKC ready.
+For the deployment on TKGS clusters, vSphere Enterprise Kubeflow is installed on a Tanzu Kubernetes Cluster (TKC). So before the deployment of vSphere Enterprise Kubeflow, you need to get vSphere and TKC ready.
 
-- For a greenfield deployment (no vSphere with Tanzu deployed on servers yet), you will need to deploy vSphere with Tanzu first. Please refer to VMware official document `vSphere with Tanzu Configuration and Management <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-152BE7D2-E227-4DAA-B527-557B564D9718.html>`__.
+- For a greenfield deployment (no vSphere with Tanzu deployed on servers yet), you need to deploy vSphere with Tanzu first. Please refer to VMware official document `vSphere with Tanzu Configuration and Management <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-152BE7D2-E227-4DAA-B527-557B564D9718.html>`__.
 
-- With the proper vSphere with Tanzu installation and configuration, you will need to provison TKGS clusters. See `Workflow for Provisioning Tanzu Kubernetes Clusters Using the TKGS v1alpha2 API <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-3040E41B-8A54-4D23-8796-A123E7CAE3BA.html>`__.
+- To provison TKGS clusters with the proper vSphere with Tanzu installation and configuration, see `Workflow for Provisioning Tanzu Kubernetes Clusters Using the TKGS v1alpha2 API <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-3040E41B-8A54-4D23-8796-A123E7CAE3BA.html>`__.
 
-- If you want to use GPU resources on vSphere platform, setup vGPU TKG with document `Deploy AI/ML Workloads on Tanzu Kubernetes Clusters <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-2B4CAE86-BAF4-4411-ABB1-D5F2E9EF0A3D.html>`__.
+- To use GPU resources on vSphere Enterprise Kubeflow, setup vGPU Tanzu Kubernetes Grid (TKG) with document `Deploy AI/ML Workloads on Tanzu Kubernetes Clusters <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-2B4CAE86-BAF4-4411-ABB1-D5F2E9EF0A3D.html>`__.
 
-- Connect to the cluster from your client host. See `Connect to a Tanzu Kubernetes Cluster as a vCenter Single Sign-On User <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-AA3CA6DC-D4EE-47C3-94D9-53D680E43B60.html>`__
+- To connect to the cluster from your client host, see `Connect to a Tanzu Kubernetes Cluster as a vCenter Single Sign-On User <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-AA3CA6DC-D4EE-47C3-94D9-53D680E43B60.html>`__.
 
-- Install ``kctrl``, a kapp-controller's native CLI on your client host. It will be used to install Kubeflow Carvel Package. See `Installing kapp-controller CLI: kctrl <https://carvel.dev/kapp-controller/docs/v0.40.0/install/#installing-kapp-controller-cli-kctrl>`__
+- Install ``kctrl``, a kapp-controller's native CLI on your client host. It is used to install  vSphere Enterprise Kubeflow Carvel Package. See `Installing kapp-controller CLI: kctrl <https://carvel.dev/kapp-controller/docs/v0.40.0/install/#installing-kapp-controller-cli-kctrl>`__.
 
-Deploy Kubeflow package on TKGS clusters
-========================================
+Deploy vSphere Enterprise Kubeflow package on TKGS clusters
+===========================================================
 
 Add package repository
 ----------------------
@@ -44,10 +44,10 @@ Add package repository
 Create ``config.yaml`` file
 ---------------------------
 
-Create a ``config.yaml`` file which would be used in later Kubeflow installation.
+Create a ``config.yaml`` file which is used in vSphere Enterprise Kubeflow installation later.
 
 .. note::
-	This YAML file would be created based on values schema of Kubeflow package, i.e. the configurations. More details can be found in :ref:`values schema table`.
+	This YAML file is created based on values schema of vSphere Enterprise Kubeflow package, i.e. the configurations. More details are found in :ref:`values schema table`.
 
 .. code-block:: shell
 
@@ -61,8 +61,8 @@ Create a ``config.yaml`` file which would be used in later Kubeflow installation
 
     EOF
 
-Install Kubeflow package
-------------------------
+Install vSphere Enterprise Kubeflow package
+-------------------------------------------
 
 .. code-block:: shell
   
@@ -74,18 +74,18 @@ Install Kubeflow package
       --version 1.6.1 \
       --values-file config.yaml
 
-This may take a few minutes, so please wait patiently. You should see a "Succeed" message in the end.
+This takes a few minutes, so please wait patiently. You see a "Succeeded" message in the end if the installation is successful.
 
     .. image:: ../_static/install-tkgs-deploySucceed.png
 
-Access Kubeflow
----------------
+Access vSphere Enterprise Kubeflow
+----------------------------------
 
-Now, we are ready to access our deployed Kubeflow in browser and start our journey.
+Now, access the deployed vSphere Enterprise Kubeflow in browser and start using it.
 
-To access Kubeflow, we need to get the IP address. There are three options.
+To access vSphere Enterprise Kubeflow, you need to get the IP address. There are three options.
 
-- When you set ``service_type`` to ``LoadBalancer``, run the command below and visit ``EXTERNAL-IP`` of ``istio-ingressgateway``.
+- When you set ``service_type`` to ``LoadBalancer``, run the following command and visit ``EXTERNAL-IP`` of ``istio-ingressgateway``.
 
   .. code-block:: shell
 
@@ -95,8 +95,8 @@ To access Kubeflow, we need to get the IP address. There are three options.
       # NAME                   TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                                                                      AGE
       # istio-ingressgateway   LoadBalancer   198.51.217.125   10.105.151.142   15021:31063/TCP,80:30926/TCP,443:31275/TCP,31400:30518/TCP,15443:31204/TCP   11d
       
-      # In this example, we should visit http://10.105.151.142:80
-- When you set ``service_type`` to ``NodePort``, run the command below and visit ``nodeIP:nodePort``.
+      # In this example, visit http://10.105.151.142:80
+- When you set ``service_type`` to ``NodePort``, run the following command and visit ``nodeIP:nodePort``.
 
   .. code-block:: shell
 
@@ -114,31 +114,29 @@ To access Kubeflow, we need to get the IP address. There are three options.
       # v1a2-v1-23-8-tkc-v100-8c-workers-zwfx4-77b7df85f7-f7f6f   Ready    <none>                 26d   v1.23.8+vmware.2   10.105.151.74   <none>        Ubuntu 20.04.4 LTS   5.4.0-124-generic   containerd://1.6.6
       # v1a2-v1-23-8-tkc-v100-8c-workers-zwfx4-77b7df85f7-l5mp5   Ready    <none>                 26d   v1.23.8+vmware.2   10.105.151.75   <none>        Ubuntu 20.04.4 LTS   5.4.0-124-generic   containerd://1.6.6
 
-      ## In this example, any one of the following will work:
+      ## In this example, anyone of the following works:
       # http://10.105.151.73:30926
       # http://10.105.151.74:30926
       # http://10.105.151.75:30926
-- Use ``port-forward``. Then visit the IP address of your client-side machine.
+- Use ``port-forward``. Then visit the IP address of your client host.
 
   .. code-block:: shell
 
       kubectl port-forward -n istio-system svc/istio-ingressgateway --address 0.0.0.0 8080:80
 
-      # if you are running the command locally, you should visit http://localhost:8080
+      # if you run the command locally, visit http://localhost:8080
 
-You can then use the IP to access Kubeflow in browser.
+Then you use the IP to access vSphere Enterprise Kubeflow in browser.
 
     .. image:: ../_static/install-tkgs-login.png
 
-If you did not make any change to the Kubeflow configurations, the default login credentials is: ``user@example.com / 12341234``.
+If you did not make any change to the vSphere Enterprise Kubeflow configurations, the default login credentials are: ``user@example.com / 12341234``.
 
-If you did not make any change to the Kubeflow configurations, the default login credentials is: ``user@example.com / 12341234``.
-
-For the first time you login after deployment, you would be guided to namespace creation page after login.
+For the first time you login after deployment, you are guided to namespace creation page.
 
     .. image:: ../_static/install-tkgs-createNS.png
 
-You should then see the Kubeflow home page.
+Then, the vSphere Enterprise Kubeflow web UI looks like below:
 
     .. image:: ../_static/install-tkgs-home.png
 
@@ -147,8 +145,8 @@ You should then see the Kubeflow home page.
 Configure pod permission and security policy
 --------------------------------------------
 
-For your first time deployment, you may need to configure pod permission and security policy in order to create and configure new pods. 
-This is important because pod creation is needed for many Kubeflow functions, such as Notebook Server creation.
+For your first time deployment, you need to configure pod permission and security policy in order to create and configure new pods. 
+This is important because pod creation is needed for many vSphere Enterprise Kubeflow functions, such as Notebook Server creation.
 
 To check your own user profile:
 
@@ -157,7 +155,7 @@ To check your own user profile:
     kubectl get profile
     kubectl get serviceaccount,authorizationpolicies,rolebinding -n <namespace_name>
 
-And to configure ``pod-security-policy``, run following command in your VM:
+And to configure ``pod-security-policy``, run the following command on your client host:
 
 .. code-block:: shell
 
@@ -177,23 +175,24 @@ And to configure ``pod-security-policy``, run following command in your VM:
       name: system:serviceaccounts:<namespace_name>
     EOF
 
-**Note:** Remember to replace ``namespace_name`` to the namespace that you would work in.
+.. note::
+        Remember to replace ``namespace_name`` to the namespace that you work in.
 
 Troubleshooting
 ===============
 
-More ``kctrl`` commands can be found in `kapp-controller's native CLI documentation <https://carvel.dev/kapp-controller/docs/v0.43.2/management-command/>`__.
+More ``kctrl`` commands are found in `kapp-controller's native CLI documentation <https://carvel.dev/kapp-controller/docs/v0.43.2/management-command/>`__.
 
-Delete the Kubeflow package
----------------------------
+Delete the vSphere Enterprise Kubeflow package
+----------------------------------------------
 
-To uninstall the Kubeflow package:
+To uninstall the vSphere Enterprise Kubeflow package:
 
    .. code-block:: shell
 
       kctrl package installed delete --package-install kubeflow
 
-When deleting the Kubeflow package, some resources may get stuck at ``deleting`` status. To solve this problem:
+When deleting the KvSphere Enterprise ubeflow package, some resources may get stuck at ``deleting`` status. To solve this problem:
 
    .. code-block:: shell
 
@@ -204,7 +203,7 @@ When deleting the Kubeflow package, some resources may get stuck at ``deleting``
 Reconciliation issue
 --------------------
 
-Kapp-controller keeps reconciliating Kubeflow, which prevents you from editing a Kubeflow resource. In this case, you may want to pause or trigger the reconciliation of Kubeflow.
+Kapp-controller keeps reconciliating vSphere Enterprise Kubeflow, which prevents you from editing a vSphere Enterprise Kubeflow resource. In this case, you may pause and then trigger the reconciliation of vSphere Enterprise Kubeflow to solve this issue.
 
 
 - To pause the reconciliation of a package installation:
@@ -237,7 +236,7 @@ Inspect package installation
 Update package configurations
 -----------------------------
 
-To update the configuration of Kubeflow package using an updated configuration file (i.e., ``config.yaml``):
+To update the configuration of vSphere Enterprise Kubeflow package using an updated configuration file (i.e., ``config.yaml``):
 
 .. code-block:: shell
 
@@ -248,7 +247,7 @@ To update the configuration of Kubeflow package using an updated configuration f
 Values schema
 -------------
 
-To inspect values schema (configurations) of the Kubeflow package, run following command:
+To inspect values schema (configurations) of the vSphere Enterprise Kubeflow package, run the following command:
 
 .. code-block:: shell
 
@@ -256,25 +255,21 @@ To inspect values schema (configurations) of the Kubeflow package, run following
 
 We summarize some important values schema in below table.
 
-====================  ============ ======= ==================================================================================================================
+====================  ============ ======= =======================================================================================================================================
 Key                   Default      Type    Description
-====================  ============ ======= ==================================================================================================================
-CD_REGISTRATION_FLOW  true         boolean Turn on Registration Flow, so that Kubeflow Central Dashboard will prompt new users to create a namespace (profile)
-IP_address            ""           string  EXTERNAL_IP address of istio-ingressgateway, valid only if service_type is LoadBalancer  
-service_type          LoadBalancer string  Service type of istio-ingressgateway. Available options: "LoadBalancer" or "NodePort"
-====================  ============ ======= ==================================================================================================================
+====================  ============ ======= =======================================================================================================================================
+CD_REGISTRATION_FLOW  true         boolean Turn on Registration Flow, so that the vSphere Enterprise Kubeflow Central Dashboard prompts new users to create a namespace (profile).
+IP_address            ""           string  ``EXTERNAL_IP`` address of ``istio-ingressgateway``, valid only if ``service_type`` is ``LoadBalancer``.
+service_type          LoadBalancer string  Service type of ``istio-ingressgateway``. Available options: ``LoadBalancer`` or ``NodePort``.
+====================  ============ ======= =======================================================================================================================================
 
 Notebook Server creation failure
 --------------------------------
 
-When you try to create a Notebook Server, you may meet following error:
+When you try to create a Notebook Server, you may meet the following error:
 
 .. code-block:: text
 
     FailedCreate 1s (x2 over 1s) statefulset-controller create Pod test-01-0 in StatefulSet test-01 failed error: pods “test-01-0” is forbidden: PodSecurityPolicy: unable to admit pod: []
 
 This error occurs because Notebook Server creation needs pod creation, and you did not configure the pod security policy correctly. To solve this error, you need to configure pod security policy based on :ref:`configure pod security policy`.
-
-.. seealso::
-
-    `Get started with Charmed Kubeflow <https://charmed-kubeflow.io/docs/get-started-with-charmed-kubeflow>`_
