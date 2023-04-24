@@ -9,7 +9,7 @@ This section explains how to use Prometheus and Grafana to monitor the Tanzu Kub
 Prerequisites
 =============
 
-- A bootstrap machine with the following commands installed: ``kubectl`` and ``helm``.
+- A client host with the following commands installed: ``kubectl`` and ``helm``.
 
 - A TKG cluster running on vSphere, with the package repository installed. For information about deploying, see `vSphere with Tanzu Configuration and Management <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-152BE7D2-E227-4DAA-B527-557B564D9718.html>`__.
 
@@ -176,7 +176,7 @@ This can be changed to a LoadBalancer instead, so it is accessible from a browse
       type: LoadBalancer
     EOF
 
-And use ``kubectl patchi``:
+And use ``kubectl patch``:
 
 .. code-block:: shell 
 
@@ -275,7 +275,7 @@ If the GPU operator is not installed, use the following shell script to automate
 Monitor the GPU Resource
 ------------------------
 
-Now, the Prometheus server is available on port 9090 at the node's IP address. 
+Now, the Prometheus server is available on port 9090 at the external IP address. 
 Use your browser to visit http://<EXTERNAL-IP>:9090. It may take a few minutes for NVIDIA Data Center GPU Manager (DCGM) to 
 start publishing the metrics to Prometheus. Type DCGM_FI_DEV_GPU_UTIL in the event bar to check if the GPU metrics are visible:
 
@@ -293,7 +293,7 @@ edited earlier in this section:
 Delete the Prometheus Chart
 ---------------------------
 
-To remove all the Kubernetes components associated with the prometheus chart and delete the release.
+To remove all the Kubernetes components associated with the prometheus and grafana chart.
 
 .. code-block:: shell 
     
