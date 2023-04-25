@@ -22,7 +22,7 @@ Update Dex's configmap
 
 Dex use a configmap for its configuration.
 
-You need to edit `Dex's configmap  <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/manifests/common/dex/base/config-map.yaml>`__ to change the ``issuer`` to {public_ip}/dex and add LDAP connector.
+You need to edit `Dex's configmap  <https://github.com/kubeflow/manifests/blob/master/common/dex/base/config-map.yaml>`__ to change the ``issuer`` to {public_ip}/dex and add LDAP connector.
 
 .. code-block:: shell
 
@@ -30,9 +30,7 @@ You need to edit `Dex's configmap  <https://github.com/vmware/ml-ops-platform-fo
 
 .. code-block:: shell
 
-  # Change the issuer to {public_ip}/dex
-  # issuer: http://dex.auth.svc.cluster.local:5556/dex
-  issuer: http://10.105.150.43/dex
+  issuer: http://dex.auth.svc.cluster.local:5556/dex
 
   # --     some configurations we don't care    -- #
   # --     some configurations we don't care    -- #
@@ -69,24 +67,7 @@ You need to edit `Dex's configmap  <https://github.com/vmware/ml-ops-platform-fo
         nameAttr: cn  
 
 
-Edit the dex's configmap to add a LDAP connector for our Kubeflow AuthService.
-
-* issuer: Change the issuer to {public_ip}/dex.
-
 For the LDAP connector, you will need to finished the `LDAP connector configurations <https://dexidp.io/docs/connectors/ldap/>`__.
-
-"""""""""""""""""""""""""""""""""""
-Update oidc-authservice's configmap
-"""""""""""""""""""""""""""""""""""
-
-You need to edit `oidc-authservice's configmap  <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/manifests/common/oidc-authservice/base/params.env>`__ change the ``OIDC_PROVIDER`` to {public_ip}/dex.
-
-.. code-block:: shell
-
-    kubectl edit configmap oidc-authservice-parameters -n istio-system
-
-    # Change the OIDC_PROVIDER to {public_ip}/dex
-    OIDC_PROVIDER: http://10.105.150.43/dex
 
 
 """""""""""""""""""""""""""""""""""""""""""
@@ -97,7 +78,6 @@ Update configmap and Restart dex deployment
 
     # run the following two lines to update dex config with the user you add
     kubectl get configmap dex -n auth -o yaml | kubectl replace -f -
-    kubectl get configmap oidc-authservice-parameters -n istio-system -o yaml | kubectl replace -f -
     # restart dex deployment to make the new configuration work
     kubectl rollout restart deployment dex -n auth
 
@@ -111,7 +91,7 @@ Update centraldashboard's configmap
 
 The automatic profile creation can be enabled as part of the deployment by setting the ``CD_REGISTRATION_FLOW`` env variable to true. Modify the ``<manifests-path>/apps/centraldashboard/upstream/base/params.env`` to set the registration variable to ``true``.
 
-You need to edit  `centraldashboard's configmap <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/manifests/apps/centraldashboard/upstream/base/params.env>`_ change the ``CD_REGISTRATION_FLOW`` to ``true``.
+You need to edit  `centraldashboard's configmap <https://github.com/kubeflow/manifests/blob/master/apps/centraldashboard/upstream/base/params.env>`_ change the ``CD_REGISTRATION_FLOW`` to ``true``.
 
 .. code-block:: shell
 
