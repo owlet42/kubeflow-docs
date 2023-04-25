@@ -2,7 +2,7 @@
 Overview
 ========
 
-In this section, we’d like to go over the end-to-end Machine Learning model development using Kubeflow’s features. The overall model development workflow could be split into two major parts: Training and Inference. During the Model Training phase, we want to build a champion model that can fulfill the problem we need to address and the performance to our satisfaction. 
+In this section, we go through the end-to-end machine learning operations (MLOps) workflow using vSphere Enterprise Kubeflow’s features. The overall MLOps workflow could be split into two major phases: Training and Inference. During the Training phase, you build a champion model that can solve the problem you need to address and achieve the performance to your satisfaction. In the Inference phase, you use this model to provide services.
 
 
 Model Training
@@ -14,47 +14,47 @@ Data Processing
 Data Exploration
 """"""""""""""""
 
-Let’s start with the data exploration where we can learn more about the data to understand the possible solution to the problem we need to address. **Jupyter Notebooks** is equipped in the Kubeflow core components to provide such feature. In Jupyter Notebook the user could share data, code, and experiments.
+Let’s start with the data exploration where you can learn more about the data to understand the possible solution to the problem you need to address. *Jupyter Notebook* is equipped in the vSphere Enterprise Kubeflow core components. In Jupyter Notebook you can share data, code, and make experiments.
 
 Data Preparation
 """"""""""""""""
 
-In order for ML algorithms to be effective, the traditional ETL (Extract, Transfer, Load) method can be applied to raw data to assure the quality of the data suitable for the models. Kubeflow offers some tools to support this:
+In order for machine learning (ML) algorithms to be effective, the traditional ETL (Extract, Transfer, Load) method can be applied to raw data to assure the quality of the data is suitable for the models. vSphere Enterprise Kubeflow integrates some tools to support this:
 
-- Apache **Spark** (the most popular tool to handle big data): Spark can handle a variety of formats and data sizes and are designed to scope with user’s data exploration environment.
+- Apache *Spark*: Spark is the most popular tool to handle big data. It can handle a variety of data formats and sizes and is designed to scope with your data exploration environment.
 
-- TensorFlow Transform (**TFT**): TFT helps to process the raw data efficiently in the context of the entire dataset.
+- TensorFlow Transform (*TFT*): TFT helps to process the raw data efficiently in the context of the entire dataset.
 
-Feature Selection
-"""""""""""""""""
+Feature Engineering
+"""""""""""""""""""
 
-Feature engineering is the process to transforming the raw data into features that the ML model can use.Often time, it is the most time-consuming part of the data processing and results in high amount of development and repeated features across projects. Kubeflow offers the feature store (feast) to user 
-overcoming this time inefficiency and effort duplication.
+Feature engineering is the process to transform the raw data into features that the ML model can use. Often time, it is the most time-consuming part of the data processing and results in high amount of development and repeated features across projects. vSphere Enterprise Kubeflow offers the Feature Store (Feast) to 
+overcome the time inefficiency and effort duplication.
 
 Model Development
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
 
-After the data processing tasks are done and a good set of data and features is identified, the user is ready to build and train the model. Kubeflow offers rich features to cover this process.
+After the data processing tasks are done and a good set of data and features is identified, you are ready to build and train the model. vSphere Enterprise Kubeflow offers rich features to cover this process.
 
 Model Training
 """"""""""""""
 
-Once the user has constructed a model from the algorithm, he can employ the Kubeflow **Training Operators** to perform the model training. The list of the Training Operators offered by Kubeflow is growing from coming releases. Here is the highlights:
+Once you construct a model from the algorithm, you can employ the vSphere Enterprise Kubeflow *Training Operators* to perform the model training. The list of the Training Operators offered by vSphere Enterprise Kubeflow is growing from coming releases. Here are the highlights:
 
-- TensorFlow (TFjob)
+- TFJob (TensorFlow)
 
-- PyTorch (PyTorchjob)
+- PyTorchJob (PyTorch)
 
-- Apache MXNet (MXjob)
+- MXJob (Apache MXNet)
 
-- XGBoost (XGBoostjob)
+- XGBoostJob (XGBoost)
 
-- MPI (MPIjob)
+- MPIJob (MPI)
 
-- PaddlePaddle (Paddlejob)
+- PaddleJob (PaddlePaddle)
 
 
-By employing these operators, users can effectively manage the model training process, monitor progress, and scale their experiments to find the best algorithm. With Kubeflow’s operators, users have the flexibility to tackle complex machine learning tasks while minimizing infrastructure complexities.
+By employing these operators, you can effectively manage the model training process, monitor progress, and make experiments to find the best algorithm. With vSphere Enterprise Kubeflow’s operators, you have the flexibility to tackle complex ML tasks while minimizing infrastructure complexities.
 
 Model Tuning
 """"""""""""
@@ -72,40 +72,40 @@ Hyperparameters are the variables that control the model training process. The e
 Hyperparameter tuning is the process of optimizing the hyperparameter values to maximize the model metrics 
 such as accuracy in validation phase.
 
-Kubeflow offers **Katib** to automate the hyperparameter tuning process by automatically tuning the target variable which user specifies in the configuration. Katib offers exploration algorithms such as random search, grid search and Bayesian to perform the hyperparameter evaluation and tries to achieve the optimal set of hyperparameters for the given model.
+vSphere Enterprise Kubeflow offers *Katib* to automate the hyperparameter tuning process by automatically tuning the target variable which you specify in the configuration. Katib offers exploration algorithms such as Random search, Grid search and Bayesian optimization to perform the hyperparameter evaluation and tries to achieve the optimal set of hyperparameters for the given model.
 
 Model Validation
 """"""""""""""""
 
-We can use Kubeflow’s **Experiments** and **Runs** to compare the metrics of a given model across multiple models. For example, these may be the same model trained on different datasets, or two models with different hyperparameters trained on the same dataset. By using the Kubeflow’s **Pipeline**, uses can automate these processes to report whether a model ran smoothly or encountered some problems.
+You can use vSphere Enterprise Kubeflow’s *Experiments* and *Runs* to compare the metrics of a given model across multiple models. For example, these may be the same model trained on different datasets, or two models with different hyperparameters trained on the same dataset. By using the vSphere Enterprise Kubeflow’s *Pipeline*, you can automate these processes to report whether a model runs smoothly or encounters some problems.
 
 
 Data Storage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 
 Shared Storage
 """"""""""""""
 
-To host data used in the common data access during the creation of the model such as using pipeline and saving results of the experiments, some sort of external and distributed storage server can be the solution. Different cloud providers have different storage offerings, for example Amazon S3, Azure Data Storage, Google Cloud Storage. Due to the complexity to deal with many storage offerings, Kubeflow ships with **MinIO** to reduce the dependency to rely on the storage offerings from different cloud providers by acting as a common gateway to public cloud storage APIs. This gateway option is the most flexible, and allows the users to create cloud independent implementation without scale limits.
+To host data used in the common data access during the creation of the model such as using pipeline and saving results of the experiments, some sort of external and distributed storage can be the solution. Different cloud providers have different storage offerings, for example Amazon S3, Azure Data Storage, Google Cloud Storage. Due to the complexity to deal with different storage offerings, vSphere Enterprise Kubeflow ships with *MinIO* to reduce the dependency on the storage offerings from different cloud providers by acting as a common gateway to public cloud storage APIs. This gateway option is the most flexible one, and allows you to create cloud independent implementation without scale limits.
 
 Model Registry
 """"""""""""""
 
-This is a storage unit that holds model specific data (classes) or weights. Its purpose is to hold trained models for fast retrieval by other applications. Without the model registry, the model classes and weights would be saved to the source code repository and hard to retrieve.
+This is a storage unit that holds model specific data (classes) or weights. Its purpose is to hold trained models for fast retrieval by other applications. Without the model registry, the model classes and weights would be saved to the source code repository and are hard to retrieve.
 
 Metadata Database
 """""""""""""""""
 
-Metadata of a model is to hold the collection of the datasets and the transformation of these datasets during the data exploration. Capturing the metadata lets the users to understand the variations during the model experiments phase. This understanding can help the users iteratively develop and efficiently improve the models. Kuebflow employs ML Matadata (**MLMD**) library to faciliate this enhancement.
-
+Metadata of a model is to hold the collection of the datasets and the transformation of these datasets during the data exploration. Capturing the metadata lets you understand the variations during the model experiments phase. This understanding helps you iteratively develop and efficiently improve the models. vSphere Enterprise Kuebflow employs ML Metadata (*MLMD*) library to faciliate this enhancement.
 
 
 Model Inference (Model Serving)
 -------------------------------
-Once the model is selected from the validation where the metrics are met, we can deploy the model to the 
+
+Once the model is selected from the validation where the metrics are met, you can deploy the model to the 
 production environment. This trained and then deployed model acts as a service that can handle prediction 
 requests. 
 
-Kubeflow simplifies the model deployment by dealing the given model‘s different model format using **Seldon Core**, **TFServe** and **KFServe**. The model-as-data methodology is used by these implementations to leverage an intermediate model format and Kubeflow allows the swapping between model frameworks as smoothly as possible. With Kubeflow the user can train the model using PyTorch or TensorFlow then when the model is served at the production, the underlying serving remains consistent with the user's API. Furthermore the hardware serving the model can be optimized for better performance than the hardware used during the model building phase.
+vSphere Enterprise Kubeflow simplifies the model deployment by dealing with the given model‘s different formats using *Seldon Core*, *TFServe* and *KFServe*. The model-as-data methodology is used by these implementations to leverage an intermediate model format and vSphere Enterprise Kubeflow allows the swapping between model frameworks as smoothly as possible. With vSphere Enterprise Kubeflow, you can train the model using PyTorch or TensorFlow. When the model is serving for production, the underlying serving remains consistent with the user's APIs. Furthermore the hardware serving the model can be optimized for better performance than the hardware used during the model training phase.
 
-Kubeflow also handles the infrastructure complexities such as modeling monitoring, scaling, revisioning during the model serving. The hosted models could be updated with newer version to fit the current dataset better and therefore increase the performance metrics. They can be rollback to previous version if certain problems are encountered after deployment. These kinds of model management can be handled smoothly and automatically with Kubeflow without much of the human involvement.
+vSphere Enterprise Kubeflow also handles the infrastructure complexities such as modeling monitoring, scaling, revisioning during the model serving. The hosted models could be updated with newer versions to fit the current dataset better and therefore increases the performance metrics. They can be rolled back to previous versions if certain problems are encountered after deployment. These kinds of model management can be handled smoothly and automatically with vSphere Enterprise Kubeflow without much of human involvements.
