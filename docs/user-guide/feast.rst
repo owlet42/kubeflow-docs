@@ -8,36 +8,36 @@ Feature Store
 Introduction
 ============
 
-**Feast** (Feature Store) is a customizable operational data system that re-uses existing infrastructure to manage and serve machine learning features to models.
+*Feast* (Feature Store) is a customizable operational data system that re-uses existing infrastructures to manage and serve machine learning (ML) features to models.
 
-* **Feature sharing and reuse**: Engineering features is one of the most time consuming activities in building an end-to-end ML system, yet many teams continue to develop features in silos. This leads to a high amount of re-development and duplication of work across teams and projects.
+* *Feature sharing and reuse*: Feature engineering is one of the most time consuming activities in building an end-to-end ML system, yet many teams continue to develop features in silos. This leads to a high amount of re-development and duplication of work across teams and projects.
 
-* **Serving features at scale**: Models need data that can come from a variety of sources, including event streams, data lakes, warehouses, or notebooks. ML teams need to be able to store and serve all these data sources to their models in a performant and reliable way. The challenge is scalably producing massive datasets of features for model training, and providing access to real-time feature data at low latency and high throughput in serving.
+* *Serving features at scale*: Models need data from a variety of sources, including event streams, data lakes, warehouses, or notebooks. ML teams need to store and serve all these data for their models in a performant and reliable way. The challenge is to scalably produce massive datasets of features for model training, and provide access to real-time feature data at low latency and high throughput in serving.
 
-* **Consistency between training and serving**: The separation between data scientists and engineering teams often lead to the re-development of feature transformations when moving from training to online serving. Inconsistencies that arise due to discrepancies between training and serving implementations frequently leads to a drop in model performance in production.
+* *Consistency between training and serving*: The separation between data scientists and engineering teams often lead to the re-development of feature transformations when moving from training to online serving. Inconsistencies that arise due to discrepancies between training and serving implementations frequently leads to a drop in model performance in production.
 
 .. image:: ../_static/user-guide-feast-introduction.jpg
 
-Feast helps ML platform teams with DevOps experience productionize real-time models. Feast can also help these teams build towards a feature platform that improves collaboration between engineers and data scientists.
+Feast helps ML teams with development and operations (DevOps) experience productionize real-time models. Feast can also help these teams build towards a feature platform that improves collaboration between engineers and data scientists.
 
-If you want to know the basic knowledges, such as a simple feature repo, please refer to `feast-quick-start <https://docs.feast.dev/getting-started/quickstart>`_.
+If you want to know the basic knowledges, such as simple feature repo, please refer to `feast-quick-start <https://docs.feast.dev/getting-started/quickstart>`_.
 For more detailed information about Feast, please refer to `Feast official website <https://docs.feast.dev/>`_, and to understand how it works, please refer to `its source code <https://github.com/feast-dev/feast>`_. 
 
 
 Get started
 ===========
 
-In this tutorial, we'll use Feast to share features for training offline models, do online model inference for a ride-sharing driver satisfaction prediction model. We put data into S3 object (MinIO) for model training and store feature into S3 object to share for model inference later.
+In this section, you use Feast to share features for training offline models, do online model inference for a ride-sharing driver satisfaction prediction model. You put data into S3 object (MinIO) for model training and store feature into S3 object to share for model inference later.
 
 Grab the `code examples <https://github.com/feast-dev/feast-workshop/tree/main/module_0>`_ to learn how to use feast to help development.
 
-Here is the roadmap of the tutorial:
+Here is the roadmap:
 
 * Set up a feature repo using MinIO S3 bucket for registry.
 * Use the offline features to train model.
 * Make predictions using online features by SQLite.
 
-The following graph shows the **overall workflow**.
+The following graph shows the *overall workflow*.
 
 .. image:: ../_static/user-guide-feast-workflow.png
 
@@ -45,7 +45,7 @@ The following graph shows the **overall workflow**.
 Upload data to MinIO bucket
 ---------------------------
 
-If you already have the MinIO storage, you can directly skip the MinIO deployment step, and follow the next steps to upload data to MinIO. If not, we also provide a standalone MinIO deployment guide on the kubernetes clusters. You can use the following YAML content and execute this command in your terminal.
+If you already have the MinIO storage, you can directly skip the MinIO deployment step, and follow the next steps to upload data to MinIO. If not, we also provide a standalone MinIO deployment guide on the kubernetes clusters. You use the following YAML content and execute this command in your terminal.
 
 .. code-block:: shell
     
@@ -135,7 +135,7 @@ If you already have the MinIO storage, you can directly skip the MinIO deploymen
             mountPath: "/storage"
   EOF
 
-This step uploads data to MinIO buckets. You need to find the MinIO ``endpoint_url``, ``accesskey``, ``secretkey`` before upload using the following commands in the terminal.
+This step uploads data to MinIO buckets. You need to find the MinIO ``endpoint_url``, ``accesskey``, ``secretkey`` before upload using the following commands in your terminal.
 
 .. code-block:: shell
 
@@ -149,7 +149,7 @@ This step uploads data to MinIO buckets. You need to find the MinIO ``endpoint_u
     # get the secret key for MinIO
     $ kubectl get secret <minio-secret-name> -n <your-namespace> -o jsonpath='{.data.secretkey}' | base64 -d
 
-Now you can create a notebook refer to :ref:`user-guide-notebooks`, then upload data to MinIO bucket in the notebook server. 
+Now you create a notebook refer to :ref:`user-guide-notebooks`, then upload data to MinIO bucket in the notebook server. 
 
 You need to install ``boto3`` dependency package in the notebook server created previously:
 
@@ -158,7 +158,7 @@ You need to install ``boto3`` dependency package in the notebook server created 
     !pip install boto3 -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 
-We've made some dummy data for this workshop. You need to create ``infra`` folder and download `driver_stats.parquet <https://github.com/feast-dev/feast-workshop/blob/main/module_0/infra/driver_stats.parquet>`_ file, put ``driver_stats.parquet`` file into ``infra`` folder. Now You can run the follow python code to upload model files.
+We've made some dummy data. You need to create ``infra`` folder and download `driver_stats.parquet <https://github.com/feast-dev/feast-workshop/blob/main/module_0/infra/driver_stats.parquet>`_ file, put ``driver_stats.parquet`` file into ``infra`` folder. Now You run the follow Python code to upload model files.
 
 .. code-block:: shell
 
@@ -187,10 +187,10 @@ We've made some dummy data for this workshop. You need to create ``infra`` folde
         print(obj.key)
 
 
-Install Feast and the dependency libraries
-------------------------------------------
+Install Feast and dependency packages
+-------------------------------------
 
-Now we need to install the dependencies for Feast in the notebook server in order to access Feast CLI.
+Now you need to install the dependencies for Feast in the notebook server in order to access Feast CLI.
 
 .. code-block:: shell
 
@@ -211,7 +211,7 @@ Now we need to install the dependencies for Feast in the notebook server in orde
 Exploring the data
 ------------------
 
-Let's dive into what the data looks like using the data ``./infra/driver_stats.parquet`` downloaded before.
+Let's dive into what the data ``./infra/driver_stats.parquet`` downloaded before looks like.
 
 .. code-block:: shell
 
@@ -221,19 +221,19 @@ Let's dive into what the data looks like using the data ``./infra/driver_stats.p
 
 .. image:: ../_static/user-guide-feast-data.png
 
-This is a set of time-series data with driver_id as the primary key (representing the driver entity) and event_timestamp as showing when the event happened.
+This is a set of time-series data with driver_id as the primary key (representing the driver entity) and event_timestamp as showing when the event happens.
 
 
 Setup the feature repo to register features
 -------------------------------------------
 
-Let's setup a feature repo for the feast project follow the next steps. Meanwhile, if you want to know more basic knowledges, such as a simple feature repo by yourself, please refer to `feast-quick-start <https://docs.feast.dev/getting-started/quickstart>`.
+Let's setup a feature repo for the feast project following the next steps. Meanwhile, if you want to know more basic knowledges, such as a simple feature repo by yourself, please refer to `feast-quick-start <https://docs.feast.dev/getting-started/quickstart>`_.
 
 ^^^^^^^^^^^^^^^^^^^^^^
 Setup the feature repo
 ^^^^^^^^^^^^^^^^^^^^^^
 
-New a python file like below screenshot to write **data_sources.py** file to load data from S3 storage.
+Create a Python file named ``data_sources.py`` as shown in below screenshot to load data from S3 storage.
 
 .. image:: ../_static/user-guide-feast-new-python-file.jpg
 
@@ -257,7 +257,7 @@ New a python file like below screenshot to write **data_sources.py** file to loa
         owner="test2@gmail.com",
     )
 
-New a python file to write **entities.py** to construct composite keys to join feature views together. 
+Create a Python file named ``entities.py`` to construct composite keys to join feature views together. 
 
 .. code-block:: shell
 
@@ -273,7 +273,7 @@ New a python file to write **entities.py** to construct composite keys to join f
         description="driver id",
     )
 
-New a python file to write **features.py** to define the various feature views corresponding to different logical groups of features and transformations from data sources keyed on entities. 
+Create a Python file named ``features.py`` to define the various feature views corresponding to different logical groups of features and transformations from data sources keyed on entities. 
 
 .. code-block:: shell
 
@@ -303,7 +303,7 @@ New a python file to write **features.py** to define the various feature views c
         owner="test2@gmail.com",
     )
 
-New a python file to write **feature_services.py** to build different model versions with different sets of features using feature services (``model_v1``, ``model_v2``).
+Create a Python file named ``feature_services.py`` to build different model versions with different sets of features using feature services (``model_v1``, ``model_v2``).
 
 .. code-block:: shell
 
@@ -322,7 +322,7 @@ New a python file to write **feature_services.py** to build different model vers
     )
 
 
-New a YAML file to write **feature_store.yaml** contains a demo setup configuring where data sources are.
+Create a YAML file named ``feature_store.yaml`` containing a demo setup configuring data sources.
 
 .. code-block:: shell
 
@@ -354,7 +354,7 @@ A quick explanation of what's happening in this ``feature_store.yaml``:
 Run ``feast plan``
 ^^^^^^^^^^^^^^^^^^^
 
-With the ``feature_store.yaml`` setup, you can now run ``feast plan`` to see what changes would happen with ``feast apply``.
+With the ``feature_store.yaml`` setup, you now run ``feast plan`` to see what changes happen with ``feast apply``.
 
 .. code-block:: shell
 
@@ -376,7 +376,7 @@ Sample output:
 Run ``feast apply``
 ^^^^^^^^^^^^^^^^^^^^
 
-This will parse the feature, data source, and feature service definitions and publish them to the registry. It will also setup some tables in the online store to materialize batch features.
+This parses the feature, data source, and feature service definitions and publishes them to the registry. It also sets up some tables in the online store to materialize batch features.
 
 .. code-block:: shell
 
@@ -396,7 +396,7 @@ This will parse the feature, data source, and feature service definitions and pu
 Verify features are registered
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can now run Feast CLI commands to verify Feast knows about your features and data sources.
+You now run Feast CLI commands to verify that Feast knows about your features and data sources.
 
 .. code-block:: shell
 
@@ -413,16 +413,16 @@ You can now run Feast CLI commands to verify Feast knows about your features and
 Fetch offline features to train model
 -------------------------------------
 
-Let's use ``get_historical_features`` API, it can retrieve features (by referencing features directly or via feature services). It will under the hood manage point-in-time joins and avoid data leakage to generate training datasets.
+Use ``get_historical_features`` API to retrieve features (by referencing features directly or via feature services). Under the hood, it manages point-in-time joins and avoids data leakage to generate training datasets.
 
-You need to do ``wget`` `driver_orders.csv <https://github.com/feast-dev/feast-gcp-driver-ranking-tutorial/blob/master/driver_orders.csv>`_ data.
+You need to get the data `driver_orders.csv <https://github.com/feast-dev/feast-gcp-driver-ranking-tutorial/blob/master/driver_orders.csv>`_ using the following command.
 
 .. code-block:: shell
 
     !wget https://github.com/feast-dev/feast-gcp-driver-ranking-tutorial/blob/master/driver_orders.csv
 
 
-Using ``get_historical_features`` API to train model.
+Use ``get_historical_features`` API to train model.
 
 .. code-block:: shell
 
@@ -463,7 +463,7 @@ Using ``get_historical_features`` API to train model.
     # Save model
     dump(reg, "driver_model.bin")
 
-The output should look like this and the trained model file "driver_model.bin" is saved in the current directory.
+The output looks like the following and the trained model file ``driver_model.bin`` is saved in the current directory.
 
 .. code-block:: shell
 
@@ -512,13 +512,13 @@ The output should look like this and the trained model file "driver_model.bin" i
 Fetch online features from SQLite to predict
 --------------------------------------------
 
-First we materialize features (which generate the latest values for each entity key from batch sources) into the online store (sqlite).
+First you materialize features (which generate the latest values for each entity key from batch sources) into the online store (SQLite).
 
 .. code-block:: shell
 
     !feast materialize-incremental $(date +%Y-%m-%d)
 
-Now we can retrieve these materialized features from SQLite by directly using the SDK, load the trained model file before, to make prediction.
+Now you can retrieve these materialized features from SQLite directly using the SDK, loading the trained model file generated before, to make predictions.
 
 .. code-block:: shell
 
@@ -563,20 +563,23 @@ Now we can retrieve these materialized features from SQLite by directly using th
       
   make_drivers_prediction() 
 
-The result output is ``Prediction for best driver id: 1003``
+The result output is ``Prediction for best driver id: 1003``.
 
 
 Troubleshooting
 ===============
 
-TypeError when execute 'feast plan' or 'feast apply'
-------------------------------------------------------
+``TypeError`` when execute ``feast plan`` or ``feast apply``
+------------------------------------------------------------
 
-If you executed 'feast plan'  or 'feast apply' and got the fllowing error:
+If you execute ``feast plan``  or ``feast apply`` and get the following error:
 
-"TypeError: the 'package' argument is required to perform a relative import for '.ipynb_checkpoints.data_sources-checkpoint' or '.jupyter.jupyter_lab_config'".
+.. code-block:: shell
 
-You can remove such files and then run 'feast plan'  or 'feast apply' again to fix this error.
+    "TypeError: the 'package' argument is required to perform a relative import for '.ipynb_checkpoints.data_sources-checkpoint' or '.jupyter.jupyter_lab_config'".
+
+
+You can remove the following 2 files and then run ``feast plan``  or ``east apply`` again. It will be fine now.
 
 .. code-block:: shell
 
@@ -586,9 +589,9 @@ You can remove such files and then run 'feast plan'  or 'feast apply' again to f
 
 .. seealso::
 
-    `Feast quickstart <https://docs.feast.dev/getting-started/quickstart>`__
+    `Feast Quickstart <https://docs.feast.dev/getting-started/quickstart>`__
 
-    `Feature Store on Kubeflow <https://www.kubeflow.org/docs/external-add-ons/feature-store/>`__
+    `Kubeflow Feature Store <https://www.kubeflow.org/docs/external-add-ons/feature-store/>`__
 
     `Workshop: Learning Feast <https://github.com/feast-dev/feast-workshop>`__
 
