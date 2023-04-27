@@ -7,11 +7,11 @@ Model Registry
 Introduction
 ============
 
-`MLFlow <https://www.mlflow.org/>`_ is a platform to streamline machine learning development, including tracking experiments, packaging code into reproducible runs, and sharing and deploying models.
+`MLFlow <https://www.mlflow.org/>`_ is a platform to streamline machine learning (ML) development, including tracking experiments, packaging code into reproducible runs, and sharing and deploying models.
 
-MLflow-Kubeflow integration requires a relation between MLflow and `MinIO <https://min.io/docs/minio/kubernetes/upstream/index.html>`_ operator, that you will learn more about in the guide. MinIO is used to store artifacts produced by MLflow runs (files, models, images, in-memory objects, model summary, etc). In the last section of this tutorial, you’ll learn how to access the artifact store using MinIO client or boto3 APIs.
+MLFlow integration with vSphere Enterprise Kubeflow requires a relation between MLFlow and `MinIO <https://min.io/docs/minio/kubernetes/upstream/index.html>`_ operator, which you learn more in this section. MinIO is used to store artifacts produced by MLFlow runs (files, models, images, in-memory objects, model summary, etc). In the last part of this section, you learn how to access the artifact store using MinIO client or ``boto3`` APIs.
 
-If you want to know the basic knowledges, please refer to `mlfow-quick-start <https://mlflow.org/docs/latest/quickstart.html#downloading-the-quickstart>`_ and to understand how it works, please refer to `its source code <https://github.com/mlflow/mlflow>`_. 
+For the basic knowledge, please refer to `mlfow-quick-start <https://mlflow.org/docs/latest/quickstart.html#downloading-the-quickstart>`_ and to understand how it works, please refer to its `source code <https://github.com/mlflow/mlflow>`_. 
 
 Get started
 ===========
@@ -19,10 +19,9 @@ Get started
 Deploy mlflow-server and mlflow-db
 ----------------------------------
 
-This tutorial will guide you through the integration of MLFlow with Kubeflow using `Juju <https://juju.is/>`_. This integration enables true automated model lifecycle management using MLFlow metrics and the MLFlow model registry.
+This section guides you through the integration of MLFlow with vSphere Enterprise Kubeflow using `Juju <https://juju.is/>`_. This integration enables true automated model lifecycle management using MLFlow metrics and the MLFlow model registry.
 
-
-In an Ubuntu terminal window, run the following commands to deploy ``mlflow-server`` and ``mlflow-db``.
+In an Ubuntu terminal window, run the following commands to deploy ``mlflow-server`` and ``mlflow-db``:
 
 .. code-block:: shell
 
@@ -40,25 +39,27 @@ For ``mlflow-server`` to become active, you need to integrate applications that 
     juju relate mlflow-server admission-webhook
 
 
-Run ``watch juju status`` to watch the application status of ``mlflow-db`` become active and ``mlflow-server`` to be waiting for ``mysql`` relation data. This takes about a minute.
+Run ``watch juju status`` to watch the application status of ``mlflow-db`` to become active and ``mlflow-server`` to be waiting for ``mysql`` relation data. This takes about a minute.
 
 
-Run an example model with Kubeflow
-----------------------------------
+Run an example model with vSphere Enterprise Kubeflow
+-----------------------------------------------------
 
 .. note::
-    **Temporary workaround for missing pod-defaults**
-    Run the following command to make a copy of pod defaults to the user’s namespace, which is ``admin`` following the guide.
+    *Temporary workaround for missing pod-defaults*
+
+    Run the following command to make a copy of pod defaults to the user’s namespace ``admin``:
+
     ``k8s kubectl get poddefaults mlflow-server-minio -o yaml -n kubeflow | sed 's/namespace: kubeflow/namespace: admin/' | k8s kubectl create -f -``
 
 
-Create a new Notebook Server refer to :ref:`user-guide-notebooks`, taking care to specify the ``mlflow-server-minio`` configuration, by ticking the box next to it. This will ensure that the correct environment variables are set so that the MLflow SDK can connect to the MLflow server.
+Create a new Notebook server refer to :ref:`user-guide-notebooks`, taking care to specify the ``mlflow-server-minio`` configuration, by ticking the box next to it. This ensures that the correct environment variables are set so that the MLFlow SDK can connect to the MLFlow server.
 
 .. image:: ../_static/user-guide-mlflow-config.png
 
 For an example code, upload or paste the `Elastic Net wine model notebook <https://github.com/canonical/mlflow-operator/blob/main/examples/elastic_net_wine_model.ipynb>`_ to the Notebook server.
 
-Run the first two cells and observe that your model metrics are recorded in MLflow as shown in the cell output below. You can see the RMSE, MAE, and R2 for the run model.
+Run the first two cells and observe that your model metrics are recorded in MLFlow as shown in the cell output below. You can see the ``RMSE``, ``MAE``, and ``R2`` for the run model.
 
 .. image:: ../_static/user-guide-mlflow-notebook01.png
 
@@ -76,4 +77,4 @@ The downloaded object will show up in the file browser on the left.
 
 
 .. seealso::
-   `MLFlow quickstart <https://mlflow.org/docs/latest/quickstart.html#downloading-the-quickstart>`_
+   `MLFlow quickstart <https://mlflow.org/docs/latest/quickstart.html>`_
