@@ -1,27 +1,27 @@
 =======================================
-Tensorflow Distributed Training (TFJob)
+TensorFlow Distributed Training (TFJob)
 =======================================
 
 Introduction
 ============
 
-``TFJob`` is a training operator in Kubeflow that is specifically designed to run distributed TensorFlow training jobs on Kubernetes clusters. It provides a simple and consistent way to define, manage, and scale TensorFlow training jobs in a distributed manner, allowing users to easily leverage the power of Kubernetes to accelerate their machine learning workloads.
+``TFJob`` is a training operator in vSphere Enterprise Kubeflow. It is specifically designed to run distributed TensorFlow training jobs on Kubernetes clusters. It provides a simple and consistent way to define, manage, and scale TensorFlow training jobs in a distributed manner, allowing you to easily leverage the power of Kubernetes to accelerate your machine learning (ML) workloads.
 
-With ``TFJob``, users can define a TensorFlow training job as a YAML configuration file, specifying the details of the job such as the number of worker and parameter servers, the location of the training data, the type of cluster to use, and more. ``TFJob`` then creates and manages the Kubernetes resources required to run the job, including pods, services, and volumes.
+With ``TFJob``, you define a TensorFlow training job with a YAML configuration file, specifying the details of the job such as the number of workers and parameter servers, the location of the training data, the type of cluster to use, and so on. ``TFJob`` then creates and manages the Kubernetes resources required to run the job, including pods, services, and volumes.
 
-``TFJob`` also supports advanced features such as distributed training with data parallelism, model parallelism, and synchronous or asynchronous updates, as well as monitoring and visualization of training metrics using TensorBoard. This makes it a powerful tool for running large-scale TensorFlow training jobs on Kubernetes clusters, whether on-premises or in the cloud.
+``TFJob`` also supports advanced features such as distributed training with data parallelism, model parallelism, and synchronous or asynchronous updates, as well as monitoring and visualization of training metrics using *TensorBoard*. This makes it a powerful tool for running large-scale TensorFlow training jobs on Kubernetes clusters, whether on-premises or in the cloud.
 
 
 Get started
 ===========
 
-In this tutorial, we'll create a training job by defining a ``TFJob`` config file to train a model in the terminal. Before that, we’ll need a working Kubeflow deployment with TFJob Operator up and running. 
+In this section, you create a training job by defining a ``TFJob`` configuration file to train a model. Before that, you need a working vSphere Enterprise Kubeflow deployment with ``TFJob`` Operator up and running. 
 
 
-Verify TFJob running
---------------------
+Verify ``TFJob`` is running
+---------------------------
 
-Check that the Tensorflow custom resource is installed:
+Check that the TensorFlow custom resource is installed:
 
 .. code-block:: shell
 
@@ -31,7 +31,7 @@ Check that the Tensorflow custom resource is installed:
     tfjobs.kubeflow.org                         2023-01-31T06:02:59Z
     ...
 
-Check that the Training operator is running via:
+Check that the training operator is running via:
 
 .. code-block:: shell
 
@@ -45,11 +45,11 @@ Check that the Training operator is running via:
 Create a TF training job
 ------------------------
 
-You can create a training job by defining a ``TFJob`` config file. See the manifests for the mnist example. You may change the config file based on your requirements.
+You may create a training job by defining a ``TFJob`` configuration file. See the manifests for the MNIST example. You may change the configuration file based on your requirements.
 
-You can deploy the ``TFJob`` resource with **CPU** and **GPU**, but we just provide YAML file with **CPU** to deploy ``TFJob`` due to certain reasons. Thus, you can follow the step to deploy the ``TFJob`` resource with **CPU**. If you want to deploy ``TFJob`` resource with **GPU**, please refer to `TFJob deployment using GPUs <https://www.kubeflow.org/docs/components/training/tftraining/#using-gpus>`_.
+You may deploy the ``TFJob`` resource with *CPU* or *GPU*, but you just provide YAML file with *CPU* to deploy ``TFJob`` due for certain reasons. Thus, you follow the step to deploy the ``TFJob`` resource with *CPU*. If you want to deploy ``TFJob`` resource with *GPU*, please refer to `TFJob deployment using GPUs <https://www.kubeflow.org/docs/components/training/tftraining/#using-gpus>`_.
 
-You can deploy the TFJob resource with **CPU** to start training:
+Deploy the TFJob resource with *CPU* to start training:
 
 .. code-block:: shell
 
@@ -81,17 +81,17 @@ You can deploy the TFJob resource with **CPU** to start training:
                   - "/var/tf_mnist/mnist_with_summaries.py"
   EOF
 
-You should now be able to see the created pods matching the specified number of replicas.
+To verify the number of created pods matches the specified number of replicas:
 
 .. code-block:: shell
 
     $ kubectl get pods -l job-name=tfjob-simple -n $USER_NAMESPACE
 
 
-Monitoring a TFJob
-------------------
+Monitoring a ``TFJob``
+-----------------------
 
-Check the events for your job to see if the pods were created.
+Check the events for your job to see if the pods are created:
 
 .. code-block:: shell
 
@@ -105,7 +105,7 @@ Check the events for your job to see if the pods were created.
     Normal  SuccessfulCreateService  77s                tfjob-controller  Created service: tfjob-simple-worker-0
     Normal  SuccessfulCreateService  77s                tfjob-controller  Created service: tfjob-simple-worker-1
 
-Check the logs to see the training result when the training process completed.
+Check the logs to see the training result after the training process completes:
 
 .. code-block:: shell
 

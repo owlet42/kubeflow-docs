@@ -5,9 +5,9 @@ PyTorch Distributed Training (PyTorchJob)
 Introduction
 ============
 
-``PyTorchJob`` is a training operator in Kubeflow that allows you to run distributed PyTorch jobs on Kubernetes clusters. It provides a PyTorch-specific implementation of the Kubernetes Operator pattern, which automates the management of PyTorch training jobs.
+``PyTorchJob`` is a training operator in vSphere Enterprise Kubeflow. It allows you to run distributed PyTorch jobs on Kubernetes clusters. It provides a PyTorch-specific implementation of the Kubernetes Operator pattern, which automates the management of PyTorch training jobs.
 
-With ``PyTorchJob``, you can define and manage PyTorch jobs as Kubernetes custom resources. The operator will then manage the creation, scaling, and deletion of the resources necessary to run the job. This includes creating pods for PyTorch workers, launching PyTorch distributed training, and managing checkpoints.
+With ``PyTorchJob``, you define and manage PyTorch jobs as Kubernetes custom resources. The operator will then manage the creation, scaling, and deletion of the resources needed to run the job. This includes creating pods for PyTorch workers, launching PyTorch distributed training, and managing checkpoints.
 
 ``PyTorchJob`` supports a range of PyTorch configurations, including single-node and multi-node distributed training, automatic and manual scaling, and more. Additionally, it supports a range of storage backends for storing training data, including local storage, NFS, and cloud storage solutions like Amazon S3 or Google Cloud Storage.
 
@@ -17,7 +17,7 @@ Overall, ``PyTorchJob`` simplifies the process of running distributed PyTorch jo
 Get started
 ===========
 
-In this tutorial, we'll create a training job by defining a ``PyTorchJob`` config file to train a model in the terminal. Before that, we’ll need a working Kubeflow deployment with PyTorch Operator up and running. Also, we need to create a volume to save logs and model file for the training.
+In this section, you create a training job by defining a ``PyTorchJob`` configuration file to train a model. Before that, you need a working vSphere Enterprise Kubeflow deployment with PyTorch Operator up and running. Also, you need to create a volume to save logs and model file for the training.
 
 
 Verify PyTorchJob running
@@ -47,7 +47,7 @@ Check that the Training operator is running via:
 Create a new volume
 -------------------
 
-In user's namespace, create a new volume named ``data``, with ``ReadWriteOnce`` access mode. The training job will save logs and model file in the volume.
+In ``user``'s namespace, create a new volume named ``data``, with ``ReadWriteOnce`` access mode. The training job saves logs and model file in the volume.
 
 .. code-block:: shell
 
@@ -77,9 +77,9 @@ In user's namespace, create a new volume named ``data``, with ``ReadWriteOnce`` 
 Create a PyTorch training job
 -----------------------------
 
-You can create a training job by defining a ``PyTorchJob`` config file. See the manifests for the distributed NLP example. You may change the config file based on your requirements.
+You can create a training job by defining a ``PyTorchJob`` configuration file. See the manifests for the distributed NLP example. You may change the configuration file based on your requirements.
 
-You just choose one of the below YAML file to apply according to your environment. If you just have **CPU** environment, follow the YAML file to deploy the ``PyTorchJob`` resource with **CPU** to start training. If you have **GPU** environment, you can follow the another YAML file to deploy the ``PyTorchJob`` resource with **GPU** to start training. 
+You just choose one of the below YAML files to apply according to your environment. If you just have *CPU* environment, follow the YAML file to deploy the ``PyTorchJob`` resource with *CPU* to start training. If you have *GPU* environment, you follow the other YAML file to deploy the ``PyTorchJob`` resource with *GPU* to start training. 
 
 .. code-block:: shell
 
@@ -176,7 +176,7 @@ You just choose one of the below YAML file to apply according to your environmen
                     nvidia.com/gpu: 1
   EOF
 
-You should now be able to see the created pods matching the specified number of replicas in the terminal.
+To verify the number of the created pods matches the specified number of replicas:
 
 .. code-block:: shell
 
@@ -187,7 +187,7 @@ You should now be able to see the created pods matching the specified number of 
 Monitoring a PyTorchJob
 -----------------------
 
-Training takes 5-10 minutes to complet the training process to monitor the job status to become success. Logs can be inspected to see its training progress. 
+Training takes 5-10 minutes to complete. Monitor the job status to become success and inspect logs to see the training progress:
 
 .. code-block:: shell
 
@@ -225,13 +225,13 @@ Firstly, deploy the single pod to start training:
             mountPath: "/opt/pytorch/output"
   EOF
 
-Waiting 10-15 minutes to complet the training process to check logs.
+Waiting 10-15 minutes for the training process to complete and check logs.
 
-Secondly, compare the training logs between the single pod and the ``PytorchJob``.
+Secondly, compare the training logs between the single pod and the ``PyTorchJob``.
 
 .. image:: ../_static/user-guide-training-pytorchjob-result.png
 
-From the picture, the model was trained 48 times for epoch 6 in the single-pod. And after using Pytorch operator, the model individually was trained 16 times in the master and 2 workers, although the loss value after each training is different, the accuracy obtained is the same after the master communicates with the 2 workers.
+As shown in the picture, the model is trained 48 times for 6 epochs in the single-pod. And after using PyTorch operator, the model is trained 16 times individually in the master and 2 workers, although the loss value after each training is different, the accuracy obtained is the same after the master communicates with the 2 workers.
 
 .. seealso::
 
