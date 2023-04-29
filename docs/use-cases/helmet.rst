@@ -5,9 +5,9 @@ End to end examples
 Helmet Detection
 ----------------
 
-The Helmet Detection example provides tutorials to introduce machine learning concepts, data science workflows and machine learning model development and deployment on Kubeflow. Following this example, you build and deploy a machine learning model that can read a picture and report whether people in the picture has a helmet on or not.
+The Helmet Detection example provides introduction machine learning (ML) concepts, data science workflows and ML model development and deployment on vSphere Enterprise Kubeflow. Following this example, you build and deploy a ML model that can read a picture and report whether people in the picture wears a helmet or not.
 
-To be specific, this example covers the following Kubeflow feature areas:
+To be specific, this example covers the following vSphere Enterprise Kubeflow features:
 
 - Model development with Kubeflow Notebook
 
@@ -15,4 +15,4 @@ To be specific, this example covers the following Kubeflow feature areas:
 
 - Model deployment with KServe
 
-To get more details on this example, visit this page: <URL to be added>
+To get more details on this example, visit this `page <https://github.com/elements-of-ai/kubeflow-docs/tree/main/examples/object_dectection/>`_.
