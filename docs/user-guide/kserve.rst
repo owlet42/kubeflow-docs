@@ -5,29 +5,29 @@ Model Serving
 Introduction
 ============
 
-KServe is a standard Model Inference Platform on Kubernetes, built for highly scalable use cases. It provides performant, standardized inference protocol across ML frameworks and support modern serverless inference workload with Autoscaling including Scale to Zero on GPU.
+KServe is a standard Model Inference Platform on Kubernetes, built for highly scalable use cases. It provides performant, standardized inference protocol across machine learning (ML) frameworks and supports modern serverless inference workload with autoscaling including Scale to Zero on GPU.
 
 You can use KServe to do the following:
 
 - Provide a Kubernetes Custom Resource Definition for serving ML models on arbitrary frameworks.
 
-- Encapsulate the complexity of autoscaling, networking, health checking, and server configuration to bring cutting edge serving features like GPU autoscaling, scale to zero, and canary rollouts to your ML deployments.
+- Encapsulate the complexity of autoscaling, networking, health checking, and server configuration to bring cutting edge serving features like GPU autoscaling, Scale to Zero, and canary rollouts to your ML deployments.
 
 - Enable a simple, pluggable, and complete story for your production ML inference server by providing prediction, pre-processing, post-processing and explainability out of the box.
 
-Please browse the `KServe GitHub repo <https://github.com/KServe/KServe>`__ to know more details!
+Please browse the `KServe GitHub repo <https://github.com/KServe/KServe>`__ for more details.
 
 
 Get started
 =========== 
 
-In this tutorial, you will deploy an InferenceService with a predictor that will load a spam email detection model trained with custom dataset. We have prepared the files needed to deploy the model through KServe before experiment, including model file, configuration file. This preparation work is complicated and lengthy, so we will not elaborate here. If you want to know more details, for example, how to prepare the model files, please see the `KServe example tutorial <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/website/content/en/docs/kubeflow-tutorial/lab4.ipynb>`__.
+In this section, you deploy an ``InferenceService`` with a predictor that loads a spam email detection model trained with custom dataset. We have prepared the files needed to deploy the model through KServe before experiment, including model file, configuration file. This preparation work is complicated and lengthy, so we do not elaborate here. If you want to know more details, for example, how to prepare the model files, please read the `KServe example tutorial <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/website/content/en/docs/kubeflow-tutorial/lab4.ipynb>`__.
 
 
 Prepare model and configuration files
 -------------------------------------
 
-First, you can create a notebook refer to :ref:`user-guide-notebooks`. Then, download model package have prepared from `this link <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/website/content/en/docs/kubeflow-tutorial/lab4_files/v1.zip>`__ and unzip the model package in this notebook server.
+First, you create a notebook refer to :ref:`user-guide-notebooks`. Then, download `model package <https://github.com/vmware/ml-ops-platform-for-vsphere/blob/main/website/content/en/docs/kubeflow-tutorial/lab4_files/v1.zip>`__ and unzip it in this notebook server:
 
 .. code-block:: shell
 
@@ -39,7 +39,7 @@ First, you can create a notebook refer to :ref:`user-guide-notebooks`. Then, dow
 Upload to MinIO
 ---------------
 
-If you already have the MinIO storage, you can directly skip the MinIO deployment step, and follow the next steps to upload data to MinIO. If not, we also provide a standalone MinIO deployment guide on the kubernetes clusters, you can refer to the `upload data to MinIO bucket` section in the :ref:`feature_store` doc. And the YAML files are the same with `MinIO deployment files <https://github.com/vmware/ml-ops-platform-for-vsphere/tree/main/website/content/en/docs/kubeflow-tutorial/lab4_minio_deploy>`__.
+If you already have the MinIO storage, you can directly skip the MinIO deployment step, and follow the next steps to upload data to MinIO. If not, we also provide instructions on how to deploy standalone MinIO on the kubernetes clusters, you may refer to the `upload data to MinIO bucket` part in the :ref:`feature_store`. And the YAML files are the same with `MinIO deployment files <https://github.com/vmware/ml-ops-platform-for-vsphere/tree/main/website/content/en/docs/kubeflow-tutorial/lab4_minio_deploy>`__.
 
 .. code-block:: shell
     
@@ -52,7 +52,7 @@ If you already have the MinIO storage, you can directly skip the MinIO deploymen
     # create deployment
     $ kubectl apply -f minio-standalone-deployment.yml
 
-This step uploads ``v1/torchserve/model-store``, ``v1/torchserve/config`` to MinIO buckets. You need to find the MinIO ``endpoint_url``, ``accesskey``, ``secretkey`` before upload using the following commands in your terminal.
+This step uploads ``v1/torchserve/model-store``, ``v1/torchserve/config`` to MinIO buckets. You need to find the MinIO ``endpoint_url``, ``accesskey``, ``secretkey`` before upload using the following commands in terminal:
 
 .. code-block:: shell
 
@@ -69,7 +69,7 @@ This step uploads ``v1/torchserve/model-store``, ``v1/torchserve/config`` to Min
     $ kubectl get secret <minio-secret-name> -n <your-namespace> -o jsonpath='{.data.secretkey}' | base64 -d
 
 
-You need to install ``boto3`` dependency package in the notebook server created before, and run the follow python code to upload model files.
+You need to install ``boto3`` dependency package in the notebook server created earlier, and run the follow Python code to upload model files:
 
 .. code-block:: shell
 
@@ -114,7 +114,7 @@ You need to install ``boto3`` dependency package in the notebook server created 
 Create MinIO service account and secret
 ---------------------------------------
 
-When you create an ``InferenceService`` to start model, you need to be authorized to access MinIO to get model. Thus, you need to create MinIO service account and secret according to the follow yaml file in the terminal.
+When you create an ``InferenceService`` to start model, authorization is needed to access MinIO to get the model. Thus, you create MinIO service account and secret using the follow YAML file:
 
 .. code-block:: shell
 
@@ -142,11 +142,10 @@ When you create an ``InferenceService`` to start model, you need to be authorize
   EOF
 
 
-Run your InferenceService using KServe
---------------------------------------
+Run ``InferenceService`` using KServe
+------------------------------------------
 
-Let's define a new InferenceService YAML for the model and apply it to the cluster in the terminal. Meanwhile, you need to notice that Set ``storageUri`` to your ``bucket_name/bucket_path``
-You may also need to change ``metadata: name`` and ``serviceAccountName``.
+Let's define a new ``InferenceService`` YAML for the model and apply it to the cluster. Meanwhile, please notice that set ``storageUri`` to your ``bucket_name/bucket_path``. You may also need to change ``metadata: name`` and ``serviceAccountName``.
 
 .. code-block:: shell
 
@@ -174,10 +173,10 @@ You may also need to change ``metadata: name`` and ``serviceAccountName``.
   EOF
 
 
-Check InferenceService status
------------------------------
+Check ``InferenceService`` status
+---------------------------------
 
-Run the following command to check status in the terminal. If the status of ``InferenceService`` is ``True``, that meaning is your model server is running well.
+Run the following command in terminal to check the status of ``InferenceService``. ``True`` means your model server is running well.
 
 .. code-block:: shell
 
@@ -193,7 +192,7 @@ Test perform inference
 Define a Test_bot for convenience
 ---------------------------------
 
-Run the following cells to define a test_bot to do model prediction in the notebook server. 
+Run the following cells to define a test_bot to make prediction in the notebook server. 
 
 .. code-block:: shell
 
@@ -280,13 +279,13 @@ Run the following cells to define a test_bot to do model prediction in the noteb
 Determine host and session
 --------------------------
 
-Run the following command to get host, which will be set to the headers in our request in the terminal.
+Run the following command in terminal to get host, which is set to the headers in your request.
 
 .. code-block:: shell
 
     $ kubectl get inferenceservice spam-email-serving -o jsonpath='{.status.url}' | cut -d "/" -f 3
 
-Use your web browser to login to Kubeflow, and get Cookies: authservice_session. If you use Chrome browser, you can go to Developer Tools -> Applications -> Cookies to get session.
+Use your web browser to login to vSphere Enterprise Kubeflow UI, and get Cookies: authservice_session. If you use Chrome browser, go to Developer Tools -> Applications -> Cookies to get session.
 
 ---------------------
 Test model prediction
@@ -308,7 +307,7 @@ Run the following cell to do model prediction in the notebook server.
     print(bot.predict(0))
 
 
-The output is like as follow:
+The output looks like:
 
 .. code-block:: shell
 
@@ -317,10 +316,10 @@ The output is like as follow:
 
 
 
-Delete InferenceService
------------------------
+Delete ``InferenceService``
+---------------------------
 
-When you are done with your InferenceService, you can delete it by running the following.
+When you are done with your ``InferenceService``, run the following command in terminal to delete it:
 
 .. code-block:: shell
 
