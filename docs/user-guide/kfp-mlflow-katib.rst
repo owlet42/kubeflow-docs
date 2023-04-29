@@ -6,62 +6,59 @@ Kubeflow Pipelines with MLFlow and Katib
 Introduction
 ------------
 
-This guide intended to introduce end users to complete ML workflow using Kubeflow. In particular, examples of Kubeflow Pipelines 
-using Katib hyperparameter tuning and MLFlow model registry are presented along with some common pipeline steps and interfaces such 
-as S3.
+This section intends to introduce you complete machine learning (ML) workflow using vSphere Enterprise Kubeflow. In particular, examples of Kubeflow Pipelines using Katib hyperparameter tuning and MLFlow model registry are presented along with some common pipeline steps and interfaces such as S3.
 
 For more detailed documentation on Kubeflow Pipelines, refer to `Kubeflow Pipelines | Kubeflow <https://www.kubeflow.org/docs/components/pipelines/>`__.
 
 For more detailed documentation on Kubeflow Katib, refer to `Katib | Kubeflow <https://www.kubeflow.org/docs/components/katib/>`__.
 
-The following diagram outlines ML workflow presented in this guide. Major pipeline steps include:
+The following diagram outlines ML workflow presented in this section. Major pipeline steps include:
 
 * Ingest dataset.
 * Clean up the dataset.
 * Store cleaned data to S3 bucket.
-* Hyperparameter-tune using Katib and Tensorflow training container image (with MLFlow store functionality).
+* Hyperparameter-tune using Katib and TensorFlow training container image (with MLFlow store functionality).
 * Convert Katib tuning results to streamlined format.
 * Train model using best parameters from tuning stage.
 * Store the production model to MLFlow model registry.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-overview.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-overview.png
 
 -------------
 Prerequisites
 -------------
 
 * Deployed MLFlow. For deployment of MLFlow, refer to :ref:`user-guide-mlflow`.
-* Familiarity with `Python <https://docs.python.org/3/tutorial/>`__, `Docker <https://docs.docker.com/>`__, `Jupyter notebooks <https://jupyter-notebook.readthedocs.io/en/stable/>`__.
+* Familiarity with `Python <https://docs.python.org/3/tutorial/>`__, `Docker <https://docs.docker.com/>`__, `Jupyter Notebook <https://jupyter-notebook.readthedocs.io/en/stable/>`__.
 
 -----------
 Get started
 -----------
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Create Notebook Server and Jupyter notebook
+Create Notebook Server and Jupyter Notebook
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Access Kubeflow dashboard, and navigate to "Notebooks". Fill in a name. Select Tensorflow image ``jupyter-tensorflow-full:v1.6.1``. 
-And select minimum configuration: 1 CPU and 4GB of RAM. Also, remember to enable "mlflow-server-minio" option in the configuration 
-section.
+Access vSphere Enterprise Kubeflow Dashboard, and navigate to **Notebooks**. Fill in a name. Select TensorFlow image ``jupyter-tensorflow-full:v1.6.1``. 
+And select minimum configuration: 1 CPU and 4GB of RAM. Also, remember to enable ``mlflow-server-minio`` option in the configuration section.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-newNotebook.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-newNotebook.png
     
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-createNotebook1.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-createNotebook1.png
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-createNotebook2.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-createNotebook2.png
 
-Connect to the newly created notebook. And create a Jupyter notebook to hold codes that will specify the Kubeflow pipeline.
+Connect to the newly created notebook. And create a Jupyter notebook to hold codes that specify the Kubeflow pipeline.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-connect.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-connect.png
 
 ^^^^^^^^^^^^^^^^^^^^^
 Define pipeline steps
 ^^^^^^^^^^^^^^^^^^^^^
 
-""""""""""""""""""
+"""""""""""""""""
 Setup environment
-""""""""""""""""""
+"""""""""""""""""
 
 To setup environment, add the following cells to the newly created Jupyter notebook:
 
@@ -92,14 +89,13 @@ To setup environment, add the following cells to the newly created Jupyter noteb
 Create data ingestion and cleanup steps
 """""""""""""""""""""""""""""""""""""""
 
-Create pipeline steps that will do data ingestion and cleanup. Setup transfer of clean data to the next step using S3 bucket.
+Create pipeline steps that do data ingestion and cleanup. Setup transfer of clean data to the next step using S3 bucket.
 
 .. note::
-    Ingesting and cleaning of input data in this guide is an example of how data can be processed in the pipeline. Different data 
+    Ingesting and cleaning of input data in this section is an example of how data can be processed in the pipeline. Different data 
     ingestion, data cleaning, data formats can be integrated.
 
-To load raw data into the pipeline, use Kubeflow Pipelines component `reusable web downloader component <https://github.com/kubeflow/pipelines/blob/master/components/contrib/web/Download/component.yaml>`__ 
-to create data ingerst operation.
+To load raw data into the pipeline, use Kubeflow Pipelines component `reusable web downloader component <https://github.com/kubeflow/pipelines/blob/master/components/contrib/web/Download/component.yaml>`__ to create data ingest operation.
 
 .. code-block:: python
 
@@ -109,13 +105,12 @@ to create data ingerst operation.
     'https://raw.githubusercontent.com/kubeflow/pipelines/master/components/contrib/web/Download/component.yaml'
     )
 
-The data in this example is in ARFF format. Create function that will do cleanup of ingested data. In this example, this function 
+The data in this example is in ARFF format. Create function that do cleanup of ingested data. In this example, this function 
 relies on specific components to aid in data processing. They are specified as packages and imported in the function code and 
-cleanup data operation. Note that S3 bucket is used as output for cleaned data.
+cleanup data operation. Note that S3 bucket is used to save output for cleaned data.
 
 .. important::
-    In following codes, environment variables ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` are used. Make sure you set them
-    up.
+    In following codes, environment variables ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY`` are used. Make sure you set them up.
 
 .. note::
     To get your ``AWS_ACCESS_KEY_ID`` and ``AWS_SECRET_ACCESS_KEY``, or to get more detailed instructions on S3 and MinIO, refer to
@@ -188,7 +183,7 @@ Define data cleanup operation based on data clean up function.
 Create hyperparameter-tuning step
 """""""""""""""""""""""""""""""""
 
-Create the next pipeline step that will do hyperparameter tuning using Katib and a training container image 
+Create the next pipeline step that does hyperparameter tuning using Katib and a training container image 
 ``docker.io/misohu/kubeflow-training:latest``.
 
 Note that output of Katib hyperparameter tuning is converted into ``string`` format by helper function ``convert_katib_results()``.
@@ -337,7 +332,7 @@ Define Katib convert results operation.
 Create model training step
 """"""""""""""""""""""""""
 
-Create the last step of the pipeline that will do model training using Tensorflow based on Katib tuning results.
+Create the last step of the pipeline that does model training using TensorFlow based on Katib tuning results.
 
 .. code-block:: python
 
@@ -431,8 +426,7 @@ Create the last step of the pipeline that will do model training using Tensorflo
 Create timestamp helper step
 """"""""""""""""""""""""""""
 
-Define a helper that generates timestamps in a Kubeflow Pipeline step. It will be needed to generate unique names for some of 
-pipeline steps.
+Define a helper that generates timestamps in a Kubeflow Pipeline step. It is needed to generate unique names for some of pipeline steps.
 
 .. code-block:: python
 
@@ -447,7 +441,7 @@ Create pipeline
 ^^^^^^^^^^^^^^^
 
 Define and create the complete pipeline that consists of all steps created earlier. Note that the name of the pipeline must be unique. If there 
-was previously defined pipeline with the same name and within the same namespace, either change the name of current pipeline or 
+is previously defined pipeline with the same name and in the same namespace, either change the name of current pipeline or 
 delete the older pipeline from the namespace.
 
 .. code-block:: python
@@ -519,7 +513,7 @@ delete the older pipeline from the namespace.
 Execute pipeline
 ^^^^^^^^^^^^^^^^
 
-Execute the pipeline using following code:
+Execute the pipeline using the following code:
 
 .. code-block:: python
 
@@ -531,61 +525,60 @@ Execute the pipeline using following code:
         ).run_id
     print(f"Run ID: {run_id}")
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Monitor process and access results
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 """"""""
 Pipeline
 """"""""
 
-After executing the "execute pipeline" cell block, you should see running output like following:
+After executing the ``execute pipeline`` cell block, you see running output like the following:
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-executeOutput.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-executeOutput.png
 
-Observe run details by clicking on "Run details" link. And you will be guided to a page showing your pipeline running process. You
-can see each component (step) of the pipeline, with blue color representing running and green color representing finished. The pipeline
+Observe run details by clicking on **Run details** link. And you are guided to a page showing your pipeline running process. You
+can see each component (step) of the pipeline, with blue color representing running and green color representing successfully finished. The pipeline
 may take some time to finish, so please be patient.
 
-And when the pipeline finishes running, you should be able to see all steps in green.
+And when the pipeline finishes running, you see all steps in green.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-pipeline.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-pipeline.png
 
-To view more details of any specific pipeline step, just click on that step, and you should be able to see a window popped on the left
+To view more details of any specific pipeline step, just click on that step, and you see a window popped on the left
 side containing more information such as inputs/outputs and logs.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-pipelineStep.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-pipelineStep.png
 
 """"""""""""""""
 Katib experiment
 """"""""""""""""
 
-To view more details about your Katib experiment, navigate to "Experiments (AutoML)" from leftside toolbar on Kubeflow UI.
+To view more details about your Katib experiment, navigate to **Experiments (AutoML)** from left side navigation on vSphere Enterprise Kubeflow Dashboard.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-experiment.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-experiment.png
 
-You should then see your experiment created for this pipeline. Click on the experiment name to see more details, such as metrics graph 
-and trials details.
+You then see your experiment created for this pipeline. Click on the experiment name to see more details, such as metrics graph and trials details.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-experimentGraph.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-experimentGraph.png
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-experimentTrials.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-experimentTrials.png
 
-When the experiment finishes, you should also be able to see the optimal value of your objective metrics (in this case, ``accuracy``).
+When the experiment finishes, you see the optimal value of your objective metrics (in this case, ``accuracy``).
 
 .. note::
-    Note that in this example, we set the number of trials as ``5`` to save much time, which leads to a relatively low accuracy value. Feel 
+    Note that in this example, you set the number of trials as ``5`` to save time, which leads to a relatively low accuracy value. Feel 
     free to customize your Katib experiment configurations, such as ``goal``, ``max_trial_count``, etc.
 
-""""""""
+""""""
 MLFlow
-""""""""
+""""""
 
-Verify that model is stored in MLFlow model registry by navigating to MLFlow dashboard.
+Verify that the model is stored in MLFlow model registry by navigating to MLFlow Dashboard.
 
-Click on "Models" on the top toolbar, and you should then see the model we just created and stored.
+Click on **Models** on the top toolbar, and you then see the model created and stored.
 
-    .. image:: ../_static/user-guide-kfp-mlflow-katib-mlflow.png
+.. image:: ../_static/user-guide-kfp-mlflow-katib-mlflow.png
 
 .. note::
     If you have any trouble with accessing MLFlow, refer to :ref:`user-guide-mlflow`.

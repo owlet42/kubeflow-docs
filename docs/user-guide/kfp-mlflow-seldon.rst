@@ -5,9 +5,9 @@ Kubeflow Pipelines with MLFlow and Seldon Core
 Introduction
 ============
 
-In this document we show you how to build your own advanced MLOps pipeline using Kubeflow Pipelines (KFP), MLFlow and Seldon Core and get them to work seamlessly together in order to deliver your model to production in a scalable, efficient manner.
+In this section we show you how to build your advanced machine learning operations (MLOps) pipelines using Kubeflow Pipelines (KFP), MLFlow and Seldon Core and get them to work seamlessly together to deliver your machine learning (ML) model to production in a scalable, efficient manner.
 
-For wine lovers, we use a wine dataset. We want to predict the wine’s quality based on a chemical analysis. The higher the quality score, the better the wine is going to taste.
+You use a wine dataset in the example. You predict the wine’s quality based on a chemical analysis. The higher the quality score is, the better the wine tastes.
 
 Get started
 ===========
@@ -15,28 +15,27 @@ Get started
 Set up your environment
 -----------------------
 
-Grab the `code samples <https://github.com/Barteus/kubeflow-examples/tree/0.2/e2e-wine-kfp-mlflow>`__ and let’s execute them together in order to get the most out of this document. You’ll need a working Kubeflow deployment with MLFLow up and running.
+Grab the `code samples <https://github.com/Barteus/kubeflow-examples/tree/0.2/e2e-wine-kfp-mlflow>`__ and execute them together in order to get the most out of the example. You need a working vSphere Enterprise Kubeflow deployment with MLFLow up and running.
 
-During the journey through the pipeline, each step will show us something new. Let’s go!
-
+Going through the pipeline, each step shows you something new.
 
 Add privilege to access MinIO for MLFlow
 ----------------------------------------
 
-Sometimes there is missing pod-defaults for the user's namespace. Please check if there is pod-defaults on the user's namespace.
+Check if pod-defaults is in the user's namespace.
 
 .. code-block:: shell
 
-   microk8s kubectl get poddefault -n admin
+   kubectl get poddefault -n admin
 
-If there is no pod-defaults for the user's namespace, run the following command to create pod-defaults to the user’s namespace to access MinIO.
+If there is no pod-defaults in the user's namespace, run the following command to create pod-defaults in the user’s namespace to access MinIO.
 
 .. code-block:: shell
 
    USER_NAMESPACE=admin
 
    #MLflow
-   cat <<EOF | microk8s kubectl create -n $USER_NAMESPACE -f -
+   cat <<EOF | kubectl create -n $USER_NAMESPACE -f -
    apiVersion: kubeflow.org/v1alpha1
    kind: PodDefault
    metadata:
@@ -53,7 +52,7 @@ If there is no pod-defaults for the user's namespace, run the following command 
          mlflow-server-minio: "true"
    EOF
 
-   cat <<EOF | microk8s kubectl create -n $USER_NAMESPACE -f -
+   cat <<EOF | kubectl create -n $USER_NAMESPACE -f -
    apiVersion: kubeflow.org/v1alpha1
    kind: PodDefault
    metadata:
@@ -80,33 +79,35 @@ If there is no pod-defaults for the user's namespace, run the following command 
       value: http://minio.kubeflow:9000 # update yourself env's minio url.
    EOF
 
-   microk8s kubectl get secret mlflow-server-seldon-init-container-s3-credentials --namespace=kubeflow -o yaml \
+   kubectl get secret mlflow-server-seldon-init-container-s3-credentials --namespace=kubeflow -o yaml \
    | sed "s/namespace: kubeflow/namespace: $USER_NAMESPACE/" \
    | sed 's/name: mlflow-server-seldon-init-container-s3-credentials/name: seldon-init-container-secret/g' \
-   | microk8s kubectl apply -n $USER_NAMESPACE-f -
+   | kubectl apply -n $USER_NAMESPACE-f -
 
 
-Load the data
+Download data
 -------------
 
-The first step is one of the most frequently performed actions. We want to download the source data and put it in object storage. We can copy some of our old code from the past, but do we have to? Let’s check if we can find this component in the `Kubeflow Pipelines components directory <https://github.com/kubeflow/pipelines/tree/master/components>`_.
+The first step is to download the source data and put it in object storage. 
+
+Whenever you need to add a step to the pipeline, first check if it already exists in the `Kubeflow Pipeline components registry <https://github.com/kubeflow/pipelines/tree/master/components>`_. 
 
 .. image:: ../_static/user-guide-kfp-mlflow-seldon-dataset.png
 
-Whenever you need to add a step to the pipeline, first check if it doesn’t already exist in the Kubeflow Pipeline components registry. This way adding a new step to the pipeline is simple – you can either load it from the URL or download and load it from a local file.
+This way adding a new step to the pipeline is simple – you can either load it from the URL or download and upload it from a local file.
 
 .. code-block:: python
 
    web_downloader_op = kfp.components.load_component_from_url('https://raw.githubusercontent.com/kubeflow/pipelines/master/components/contrib/web/Download/component.yaml')
 
 
-Just like that, we developed our first step!
+Just like that, you developed your first step!
 
 
 Preprocess our ML source data
 -----------------------------
 
-For the preprocessing step we need a different approach. Each data preprocessing step is different, so we likely won’t find what we need in the KFP components registry. During the experiment phase, preprocessing is usually done in a jupyter notebook. So we will wrap this code into a Python function so that we can convert it into a component. It’s important to notice that pandas import is inside the Python function because the library needs to be imported inside the Docker container that will eventually be running the step.
+For the preprocessing step you need a different approach. Each data preprocessing step is different, so it's unlikely to find what you need in the KFP components registry. During the experiment phase, preprocessing is usually done in a Jupyter notebook. So wrap the code into a Python function so that you convert it into a component. It’s important to notice that ``pandas import`` is inside the Python function because the package needs to be imported inside the Docker container that eventually runns the step.
 
 .. code-block:: python
 
@@ -118,7 +119,7 @@ For the preprocessing step we need a different approach. Each data preprocessing
       df.columns = [c.lower().replace(' ', '_') for c in df.columns]
       df.to_parquet(output_file)
 
-We have a function. We can write tests for it if we want, to be sure it works correctly. Now we’ll wrap it into the container so the Kubernetes platform underneath Kubeflow will know how to invoke our code. We’ll use the Docker image for Python 3.9 and install additional python packages using Python’s pip package manager.
+You have a function write tests for it to make sure it works correctly. Now you wrap it into the container so the Kubernetes platform underneath vSphere Enterprise Kubeflow knows how to invoke your code. You use the Docker image for Python 3.9 and install additional Python packages using Python’s ``pip`` package installer.
 
 .. code-block:: python
 
@@ -127,13 +128,13 @@ We have a function. We can write tests for it if we want, to be sure it works co
       base_image='python:3.9',
       packages_to_install=['pandas', 'pyarrow'])
 
-This method allows us to quickly build a pipeline in a way that does not require additional resources like template files. It also works nicely as a way for you to build the pipeline using a notebook. However installing Python packages each time the step is executed is not ideal, especially if the pipeline is invoked frequently.
+This method allows you to quickly build a pipeline in a way that does not require additional resources like template files. It also works nicely to build the pipeline using a notebook. However installing Python packages each time the step is executed is not ideal, especially if the pipeline is invoked frequently.
 
 
-Train our ML predictive model
------------------------------
+Train your ML prediction model
+------------------------------
 
-This preprocessing step is created using a function-based component too. The difference in this step is that we need to make calls to MLFlow and Minio – and these calls require setting some environment variables. How to securely handle setting up the environment variables is something we will discuss later in this document. Additionally, we’ll change the training code, so that all of the information about the experiment will be saved in MLFLow and the ML model artefact that this step generates will be stored in Minio.
+This preprocessing step is created using a function-based component too. The difference in this step is that you need to make calls to MLFlow and MinIO – and these calls require setting environment variables. How to securely handle setting up the environment variables is discussed later. Additionally, you change the training code, so that all of the information about the experiment is saved in MLFLow and the ML model artifacts this step generates is stored in MinIO.
 
 .. code-block:: python
 
@@ -158,7 +159,7 @@ This preprocessing step is created using a function-based component too. The dif
          return f"{mlflow.get_artifact_uri()}/{result.artifact_path}"
 
 
-The value returned from the step is the model URI – the path to the model file in Minio. But if you need to return more than a single value, you can use a NamedTuple. For more details take a look `here <https://www.kubeflow.org/docs/components/pipelines/sdk/python-function-components/#building-python-function-based-components>`__.
+The value returned from the step is the model URI – the path to the model file in MinIO. But if you need to return more than a single value, you can use a NamedTuple. For more details, take a look at `Building Python function-based components <https://www.kubeflow.org/docs/components/pipelines/sdk/python-function-components/#building-python-function-based-components>`__.
 
 .. code-block:: python
 
@@ -167,25 +168,25 @@ The value returned from the step is the model URI – the path to the model file
       base_image='python:3.9',
       packages_to_install=['pandas', 'pyarrow', 'sklearn', 'mlflow', 'boto3'])
 
-The training container was created based on the same Python 3.9 image as the previous step. When creating steps from functions, it’s best to try and use the same image whenever possible, in order to take full advantage of the Kubernetes caching mechanism for Docker images.
+The training container is created based on the same Python 3.9 Docker image as used in the previous step. When creating steps from functions, it’s best to try and use the same image whenever possible, in order to take full advantage of the Kubernetes caching mechanism for Docker images.
 
 
-Deploy our ML model
-^^^^^^^^^^^^^^^^^^^
+Deploy your ML model
+^^^^^^^^^^^^^^^^^^^^
 
-We’ll create the inference server deployment that’ll host our ML model using a Docker container-based, microservices approach. The code for this step is not in the experiment notebook. We’re going to use Seldon Core for deployment together with MLFLow Server so that we can take full advantage of features like monitoring our deployment without needing to build a dedicated Docker image. The model artefact will be downloaded by the Seldon Core deployment from our Minio object storage system. In this step, we’ll need to use kubectl to apply our SeldonDeployment configuration. The URI containing the path to the ML model is externally provided to the training step.
+You deploy the inference server that hosts your ML model using a Docker container-based, microservices approach. The code for this step is not in the experiment notebook. You use Seldon Core for deployment together with MLFLow Server so that you take full advantage of features like monitoring your deployment without building a dedicated Docker image. The model artifacts are downloaded by the Seldon Core deployment from your MinIO object storage. In this step, you use kubectl to apply your ``SeldonDeployment`` configuration. The URI containing the path to the ML model is provided to the training step externally.
 
-Developing the deployment step is split into a few parts:
+The deployment step is split into a few parts:
 
-   * create the command-line application
-   * wrap it in the Docker image and publish it
-   * create the component configuration
-   * create the step from the component configuration file
+* create the command-line application
+* wrap it in the Docker image and publish it
+* create the component configuration
+* create the step from the component configuration file
 
 Create the command-line application
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-First, we create a command-line application, which calls “kubectl” with a file generated from a Jinja template as a parameter.
+Firstly, create a command-line application, which calls ``kubectl`` with a file generated from a Jinja template as a parameter:
 
 .. code-block:: python
 
@@ -199,7 +200,7 @@ First, we create a command-line application, which calls “kubectl” with a fi
          trim_blocks=True, lstrip_blocks=True)
          template = env.get_template('deploy-manifest.j2')
          f.write(template.render(model_uri=model_uri))
-      result = subprocess.call(['microk8s kubectl', 'apply', '-f', '/tmp/manifest.yaml', '-n', 'admin'])
+      result = subprocess.call(['kubectl', 'apply', '-f', '/tmp/manifest.yaml', '-n', 'admin'])
       assert result == 0
 
    if __name__ == '__main__':
@@ -212,7 +213,7 @@ First, we create a command-line application, which calls “kubectl” with a fi
 Build and push the Docker image
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Next, we use Docker to build and push an image to the Docker image registry. The Dockerfile can be found here and the build script is below.
+Next, use Docker to build and push an image to the Docker image registry. The `Dockerfile <https://github.com/Barteus/kubeflow-examples/tree/0.2/e2e-wine-kfp-mlflow/components/deploy>`_, and the build script are as below:
 
 .. code-block:: dockerfile
 
@@ -227,7 +228,7 @@ Next, we use Docker to build and push an image to the Docker image registry. The
 Create a component configuration file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Thirdly, we will create a Kubeflow pipeline step configuration file using the output from docker inspect. This configuration file is crucial in order to be able to share your Kubeflow pipeline step with other teams.
+Thirdly, create a vSphere Enterprise Kubeflow pipeline step configuration file using the output from ``docker inspect``. This configuration file is crucial to share your Kubeflow pipeline step with others.
 
 .. code-block:: shell
 
@@ -246,25 +247,25 @@ Thirdly, we will create a Kubeflow pipeline step configuration file using the ou
            ]
 
 
-Load our component
-^^^^^^^^^^^^^^^^^^
+Load your component
+^^^^^^^^^^^^^^^^^^^
 
-Finally, we’ll load the components in a similar way to the “Download data” step. We use the configuration file we created in the third step to specify which Docker image is used, how it is to be invoked and what the input and output parameters are.
+Finally, load the components in a similar way to the *Download data* step. You use the configuration file created in the third step to specify which Docker image to use, how it is invoked and what the input and output parameters are.
 
 .. code-block:: python
 
    deploy_op = kfp.components.load_component_from_file(
       os.path.join('components', 'deploy', 'component.yaml'))
 
-The biggest advantage of this component creation method is extensibility. If we want to, we can use any language to create the command-line application implementation. We can use Python and Jinja (a free templating engine) in order to keep the code clean. We can have our manifest code in the template file, which was not possible with a function-based approach. Additionally, we do not need to install Python libraries every time we execute the step. That means faster execution times!
+The biggest advantage of this component creation method is extensibility. You may use any language to create the command-line application implementation as you want. You use Python and Jinja (a free templating engine) in order to keep the code clean. You have your manifest code in the template file, which is not possible with a function-based approach. Additionally, you do not need to install Python packages every time you execute the step. That means faster executions.
 
-If you don’t want to build your own Docker image, feel free to use the one we’ve set up in the repository.
+Feel free to use the Docker image set up and pushed into Docker image repository.
 
 
 Put the MLOps pipeline together
 -------------------------------
 
-We’ve defined all the components – now let’s create a pipeline from them. We need to put them in the proper order, define inputs and outputs and add appropriate configuration values.
+You’ve defined all the components – now let’s create a pipeline from them. You need to put them in proper order, define inputs and outputs and add appropriate configuration values.
 
 .. code-block:: python
 
@@ -283,24 +284,26 @@ We’ve defined all the components – now let’s create a pipeline from them. 
       deploy_task = deploy_op(model_uri=train_task.output)
 
 
-We don’t need to specify the order of the tasks explicitly. When you set input-output dependencies, the tasks will order themselves. Convenient, right?!
+You don’t need to specify the order of the steps explicitly. When you set input-output dependencies, the steps will order themselves. Convenient, right?!
 
-When looking at the training task, we see it differs from the others. It requires additional configuration. We need to add some sensitive data using Kubernetes secrets and the rest using environment properties. Kubeflow Pipelines supports multiple ways to add secrets to the pipeline tasks and more information can be found `here <https://kubeflow-pipelines.readthedocs.io/en/stable/source/kfp.extensions.html#module-kfp.aws>`_.
+When looking at the training step, it differs from the others. It requires additional configuration. You need to add some sensitive data using Kubernetes secrets and the rest using environment variables. Kubeflow Pipelines supports multiple ways to add secrets to the pipeline steps and for `more information <https://kubeflow-pipelines.readthedocs.io/en/stable/source/kfp.extensions.html#module-kfp.aws>`_.
 
-Now, the coding part is completed. All that’s left is to see the results of our pipeline. Run the pipeline.py to generate wine-pipeline.yaml in the generated folder. We’ll then navigate to the Kubeflow Dashboard with our browser, create a new pipeline with our YAML file and – the moment of truth – run the pipeline.
+Now, the coding part is completed. All that’s left is to see the results of your pipeline. Run ``pipeline.py`` to generate ``wine-pipeline.yaml`` in the generated folder. You then open the vSphere Enterprise Kubeflow Dashboard with your browser, create a new pipeline with your YAML file and – the moment of truth – run the pipeline.
 
 .. image:: ../_static/user-guide-kfp-mlflow-seldon-result.png
+    :align: center
+    :scale: 60%
 
 
 Check the Inference endpoint
 ----------------------------
 
-We want to be 100% sure it works – so let’s check if the inference endpoint is responding correctly. First, go to the Kubernetes cluster and port-forward or expose the newly created service. 
+To be 100% sure it works – check if the inference endpoint is responding correctly. First, go to the Kubernetes cluster and port-forward or expose the newly created service. 
 
 .. code-block:: shell
 
    # check pod's status
-   $ microk8s kubectl get po -n admin
+   $ kubectl get po -n admin
    NAME                                                           READY   STATUS      RESTARTS      AGE
    ml-pipeline-ui-artifact-5cfb68f5b7-97kjc                       2/2     Running     4 (47h ago)   2d
    ml-pipeline-visualizationserver-665bb6b8fc-f5nkm               2/2     Running     4 (47h ago)   2d
@@ -311,7 +314,7 @@ We want to be 100% sure it works – so let’s check if the inference endpoint 
    mlflow-wine-super-model-0-classifier-5c79775bb6-bv9dn          3/3     Running     0             22h
 
    # check service's status
-   $ microk8s kubectl get svc -n admin
+   $ kubectl get svc -n admin
    NAME                                                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
    ml-pipeline-visualizationserver                            ClusterIP   10.152.183.97    <none>        8888/TCP            2d
    ml-pipeline-ui-artifact                                    ClusterIP   10.152.183.103   <none>        80/TCP              2d
@@ -319,12 +322,12 @@ We want to be 100% sure it works – so let’s check if the inference endpoint 
    mlflow-wine-super-model                                    ClusterIP   10.152.183.236   <none>        8000/TCP,5001/TCP   22h
 
    # port-forward or expose the newly created service to localhost
-   $ microk8s kubectl port-forward service/mlflow-wine-super-model -n admin 8000:8000
+   $ kubectl port-forward service/mlflow-wine-super-model -n admin 8000:8000
    Forwarding from 127.0.0.1:8000 -> 8000
    Forwarding from [::1]:8000 -> 8000
 
 
-Then, let’s use curl on another terminal to see if the endpoint is responding correctly.
+Then, use ``curl`` in another terminal to see if the endpoint is responding correctly.
 
 .. code-block:: shell
 
@@ -333,28 +336,28 @@ Then, let’s use curl on another terminal to see if the endpoint is responding 
 Seldon Core supports batch inference out-of-the-box and its performance is much better than calling the endpoint in a loop.
 
 
-Troubleshoting
-==============
+Troubleshooting
+===============
 
-Can not resolve hostname for download data url
+Can not resolve hostname for download data URL
 ----------------------------------------------
 
-Sometimes hostname will be combined with a domain name on this machine to form a new hostname, which cannot be resolved. The domain name information on this machine can be viewed in this file. /etc/resolv.conf.
+Sometimes hostname is combined with a domain name, which cannot be resolved. The domain name information on this machine can be viewed in this file ``/etc/resolv.conf``.
 
-To solved this, just add ‘.’ after domain name to prevent coredns from using URLs as hostnames, such as 'raw.githubusercontent.com.'
+To solved this, just add *.* after domain name to prevent CoreDNS from using fully qualified domain names (FQDN) as hostnames, such as ``raw.githubusercontent.com.``
 
 
 ML Model file is not compatible with ``seldonio/mlflowserver:1.14.0-dev``
 -------------------------------------------------------------------------
 
 ML Model file saved with ``mlflow=2`` in ``mlflowserver`` is not compatible with ``seldonio/mlflowserver:1.14.0-dev``. The error shows 
-``conda_env_create.py TypeError: join()`` argument must be ``str`` or ``bytes``, not ``dict``. And this issue has fixed  on `this link <https://github.com/SeldonIO/seldon-core/pull/4505>`_. But there is no update conda_env_create.py code for seldonio/mlflowserver:1.14.0-dev Docker image.
+``conda_env_create.py TypeError: join()`` argument must be ``str`` or ``bytes``, not ``dict``. And this issue has been `fixed <https://github.com/SeldonIO/seldon-core/pull/4505>`_. But there is no update to ``conda_env_create.py`` code for ``seldonio/mlflowserver:1.14.0-dev`` Docker image.
 
-Choose one of the below of solutions to solve this error.
+Choose one of the following solutions to solve this error.
 
-- Solution 1: Update the latest `conda_env_create.py <https://github.com/SeldonIO/seldon-core/blob/master/servers/mlflowserver/mlflowserver/conda_env_create.py>`_ into seldonio/mlflowserver:1.14.0-dev Docker image and commit the new Docker image to use.
+- Solution 1: Update the latest `conda_env_create.py <https://github.com/SeldonIO/seldon-core/blob/master/servers/mlflowserver/mlflowserver/conda_env_create.py>`_ into ``seldonio/mlflowserver:1.14.0-dev`` Docker image and commit the new Docker image to use.
 
-- Solution 2: Modify MLmodel file
+- Solution 2: Modify ``MLModel`` file
 
   .. code-block:: shell
 
