@@ -6,19 +6,19 @@ Hyperparameter Tuning
 Introduction
 ------------
 
-We would use **Katib** for hyperparameter tuning. Katib is a Kubernetes-native project for automated machine learning (AutoML). 
-It supports hyperparameter tuning, early stopping and neural architecture search (NAS). It can tune hyperparameters of applications 
-written in any language of the users' choice and natively supports many ML frameworks, such as TensorFlow, MXNet, PyTorch, XGBoost, 
-and others. In this guide, we would use Katib to automate the tuning of machine learning hyperparameters which control the AI 
-learning way and rate. Katib would also be used to offer neural architecture search features in order to help you find your model's 
+We use *Katib* for hyperparameter tuning. Katib is a Kubernetes-native project for automated machine learning (AutoML). 
+It supports hyperparameter tuning, early stopping and neural architecture search (NAS). It tunes hyperparameters of applications 
+written in any language of the your choice and natively supports many machine learning (ML) frameworks, such as TensorFlow, MXNet, PyTorch, XGBoost, 
+and etc. In this section, you use Katib to automate the tuning of ML hyperparameters which control the AI 
+learning way and rate. Katib is also used to offer neural architecture search features in order to help you find your model's 
 optimal architecture. If you are unfamiliar with hyperparameters tuning or Katib, please refer to 
-`Kubeflow documentation <https://www.kubeflow.org/docs/components/katib/overview/>`_ for more information.
+`Introduction to Katib <https://www.kubeflow.org/docs/components/katib/overview/>`_ for more information.
 
-We would use Katib to get the most effective configuration for the current task by running multiple experiments, each representing
-a single tuning operation. An experiment consists of an objective specifying what is to be optimized, a search space representing
-the constraints used for the optimization, and an algorithm that is used to find the optimal values.
+You use Katib to get the most effective configuration for the current task by running multiple experiments, each representing
+a single tuning operation. An experiment consists of an objective specifying what to be optimized, a search space representing
+the constraints used for the optimization, and an algorithm used to find the optimal values.
 
-In this guide, we would show two ways to run Katib experiments.
+In this section, there are two ways to run Katib experiments.
 
 -----------
 Get Started
@@ -28,43 +28,43 @@ Get Started
 Run Katib experiments from CLI
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Katib experiments can be ran through Kubeflow UI.
+You can run Katib experiments through vSphere Enterprise Kubeflow UI.
 
-We first download an example to create a Katib experiment.
+First download an example to create a Katib experiment:
 
 .. code-block:: shell
 
     curl https://raw.githubusercontent.com/kubeflow/katib/master/examples/v1beta1/hp-tuning/grid.yaml > grid-example.yaml
 
-You should now be able to see the file ``grid-example.yaml``. Note that if you are using a different namespace than ``kubeflow``, 
-make sure to change that in ``grid-example.yaml``.
+.. Note:: 
+    if you use a different namespace from ``kubeflow``, make sure to change it in the downloaded file ``grid-example.yaml``.
 
-As istio sidecar is incompatible with Katib experiments, we disable it using ``yq``. For ``yq`` installation, please refer to 
-`this github page <https://github.com/mikefarah/yq/#install>`_ .
+As Istio sidecar is incompatible with Katib experiments, disable it using ``yq``. To install ``yq``, please refer to its 
+`installation document <https://github.com/mikefarah/yq/#install>`_.
 
 .. code-block:: shell
 
     yq -i '.spec.trialTemplate.trialSpec.spec.template.metadata.annotations."sidecar.istio.io/inject" = "false"' grid-example.yaml
 
-And we are now ready to apply the YAML file to start our experiments.
+Now you are ready to apply the YAML file to start your experiment:
 
 .. code-block:: shell
 
     kubectl apply -f grid-example.yaml
 
-Katib experiments would then start to run. We can inspect experiment progress using ``kubectl`` by running the following command:
+Katib experiment then starts running. You can inspect experiment progress using ``kubectl`` by running the following command:
 
 .. code-block:: shell
 
     kubectl -n kubeflow get experiment grid-example -o yaml
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Run Katib experiments from Kubeflow UI
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Run Katib experiments from vSphere Enterprise Kubeflow UI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-We can also use the Kubeflow UI to run Katib experiments. 
+You can also use vSphere Enterprise Kubeflow UI to run Katib experiments. 
 
-Again, we first save following contents as ``grid-example.yaml`` which would be used to generate Katib experiment.
+Again, first save the following content as ``grid-example.yaml`` which is used to generate Katib experiment.
 
 .. code-block:: yaml
 
@@ -138,38 +138,38 @@ Again, we first save following contents as ``grid-example.yaml`` which would be 
                       - "--optimizer=${trialParameters.optimizer}"
                 restartPolicy: Never
 
-Open the ``grid-example.yaml`` file and edit it, changing ``.metadata.namespace`` to your own. Note that here we also disable istio 
+Open the ``grid-example.yaml`` file and edit it, changing ``.metadata.namespace`` to your own. Note that here we also disable Istio 
 sidecar using ``sidecar.istio.io/inject: "false"``, under ``.spec.trialTemplate.trialSpec.spec.template.metadata.annotations``.
 
-On Kubeflow in your browswer, go to Experiments (AutoML) from left panel, and select "New Experiment".
+Open vSphere Enterprise Kubeflow UI in your browswer, go to **Experiments (AutoML)** on the left panel, and select **New Experiment**.
 
-    .. image:: ../_static/user-guide-katib-experiment.png
+.. image:: ../_static/user-guide-katib-experiment.png
 
-Click the link labelled "Edit and submit YAML", and paste the contents of the ``grid-example.yaml`` file we just saved and edited. 
-Afterwards click "Create".
+Click the link labelled **Edit and submit YAML** at the bottom, and paste the content of the file ``grid-example.yaml`` you just saved and edited. 
+Then click **CREATE**.
 
-    .. image:: ../_static/user-guide-katib-createExperiment.png
+.. image:: ../_static/user-guide-katib-createExperiment.png
 
-Once the experiment has been created and submitted, in the Katib dashboard under "Experiment (AutoML)", you should see the experiment
-start to run. To inspect the experiment for more details, click on the experiment.
+Once the experiment is created and submitted, in the Katib dashboard under **Experiment (AutoML)**, you see the experiment
+starts running. To inspect the experiment for more details, click on the experiment.
 
-    .. image:: ../_static/user-guide-katib-dashboard.png
+.. image:: ../_static/user-guide-katib-dashboard.png
 
 In the Experiment Details view, you can see how your experiment is progressing, such as information of each running trial, the 
 experiment's YAML file, and a plot recording parameters and metrics related to your experiment.
 
-    .. image:: ../_static/user-guide-katib-dashboard2.png
+.. image:: ../_static/user-guide-katib-dashboard2.png
 
-    .. image:: ../_static/user-guide-katib-details.png
+.. image:: ../_static/user-guide-katib-details.png
 
-The experiment would keep running until the objective you set in the YAML file gets realized, or timed out. In this example, when
-the experiment finishes, you should be able to see the recommended hyperparameters information, as well as the results of all trial
+The experiment keeps running until the objective you set in the YAML file gets realized, or it's timed out. In this example, when
+the experiment finishes, you see the recommended hyperparameters information, as well as the results of all trial
 and the optimal metrics.
 
-    .. image:: ../_static/user-guide-katib-dashboardSuccess.png
+.. image:: ../_static/user-guide-katib-dashboardSuccess.png
 
-    .. image:: ../_static/user-guide-katib-result.png
+.. image:: ../_static/user-guide-katib-result.png
 
 .. note:: 
-    The experiment may take some time to finish, maybe from 30 minutes to about 2 hours.
+    The experiment takes some time to finish, from about 30 minutes to 2 hours.
 
