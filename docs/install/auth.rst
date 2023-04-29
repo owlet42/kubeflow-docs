@@ -6,23 +6,23 @@ Authentication Integration
 Introduction
 ------------
 
-The goal of Kubeflow integrate with VMware LDAP Server is that we can login Kubeflow using VMware employee LDAP account. As follow screenshots, choose 'Log in with OpenLDAP', input your VMware account, then you can log in Kubeflow successfully. When you log in Kubeflow, Kubeflow will create your own user profile automatically.
+The goal of vSphere Enterprise Kubeflow's integration with LDAP Server is that you can login to vSphere Enterprise Kubeflow using your LDAP account. As shown in the following screenshots, choose **Log in with OpenLDAP**, input your account name and password, then you can login to vSphere Enterprise Kubeflow successfully. When you login, it will create your own user profile automatically.
 
 .. image:: ../_static/operation-guide-auth-ldap-goal01.png
 .. image:: ../_static/operation-guide-auth-ldap-goal02.jpeg
 .. image:: ../_static/operation-guide-auth-ldap-goal03.png
 
 -------------------------
-Enable "Log in with LDAP"
+Enable *Log in with LDAP*
 -------------------------
 
 """"""""""""""""""""""
-Update Dex's configmap
+Update Dex's ConfigMap
 """"""""""""""""""""""
 
-Dex use a configmap for its configuration.
+Dex uses a ConfigMap for its configuration.
 
-You need to edit `Dex's configmap  <https://github.com/kubeflow/manifests/blob/master/common/dex/base/config-map.yaml>`__ to change the ``issuer`` to {public_ip}/dex and add LDAP connector.
+You need to edit `Dex's ConfigMap  <https://github.com/kubeflow/manifests/blob/master/common/dex/base/config-map.yaml>`__ to change the ``issuer`` to ``<public_ip>/dex`` and add LDAP connector.
 
 .. code-block:: shell
 
@@ -67,11 +67,11 @@ You need to edit `Dex's configmap  <https://github.com/kubeflow/manifests/blob/m
         nameAttr: cn  
 
 
-For the LDAP connector, you will need to finished the `LDAP connector configurations <https://dexidp.io/docs/connectors/ldap/>`__.
+For the LDAP connector, you need to finish the `LDAP connector configurations <https://dexidp.io/docs/connectors/ldap/>`__.
 
 
 """""""""""""""""""""""""""""""""""""""""""
-Update configmap and Restart dex deployment
+Update ConfigMap and restart dex deployment
 """""""""""""""""""""""""""""""""""""""""""
 
 .. code-block:: shell
@@ -81,17 +81,17 @@ Update configmap and Restart dex deployment
     # restart dex deployment to make the new configuration work
     kubectl rollout restart deployment dex -n auth
 
-----------------------------------------
-Enable Enable automatic profile creation
-----------------------------------------
+---------------------------------
+Enable automatic profile creation
+---------------------------------
 
-"""""""""""""""""""""""""""""""""""
-Update centraldashboard's configmap
-"""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""
+Update Central Dashboard's ConfigMap
+""""""""""""""""""""""""""""""""""""
 
-The automatic profile creation can be enabled as part of the deployment by setting the ``CD_REGISTRATION_FLOW`` env variable to true. Modify the ``<manifests-path>/apps/centraldashboard/upstream/base/params.env`` to set the registration variable to ``true``.
+The automatic profile creation can be enabled as part of the deployment by setting the ``CD_REGISTRATION_FLOW`` environment variable to ``true``. Modify the ``<manifests-path>/apps/centraldashboard/upstream/base/params.env`` to set the registration variable to ``true``.
 
-You need to edit  `centraldashboard's configmap <https://github.com/kubeflow/manifests/blob/master/apps/centraldashboard/upstream/base/params.env>`_ change the ``CD_REGISTRATION_FLOW`` to ``true``.
+You need to edit  `Central Dashboard's ConfigMap <https://github.com/kubeflow/manifests/blob/master/apps/centraldashboard/upstream/base/params.env>`_ changing ``CD_REGISTRATION_FLOW`` to ``true``.
 
 .. code-block:: shell
 
@@ -101,9 +101,9 @@ You need to edit  `centraldashboard's configmap <https://github.com/kubeflow/man
     # CD_REGISTRATION_FLOW: false
     CD_REGISTRATION_FLOW: "true"
 
-"""""""""""""""""""""""""""""""""""""""""""""""""
-Update centraldashboard deployment and Restart it
-"""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""
+Update Central Dashboard deployment and restart it
+""""""""""""""""""""""""""""""""""""""""""""""""""
 
 .. code-block:: shell
 
@@ -125,29 +125,29 @@ Update centraldashboard deployment and Restart it
     kubectl get deploy centraldashboard -n kubeflow -o yaml | kubectl replace -f -
 
 
-When an authenticated user logs into the system and visits the central dashboard for the first time, they trigger a profile creation automatically.
-A brief message introduces profiles,  and the user can name their profile and click Finish.  This redirects the user to the dashboard where they can view and select their profile in the dropdown list.
+When an authenticated user logs into the system and visits the Central Dashboard for the first time, it triggers profile creation automatically.
+A brief message introduces profiles, and the user can name her profile and click **Finish**. This redirects the user to the Dashboard where she views and selects her profile in the drop down list.
 
 .. image:: ../_static/operation-guide-auth-ldap-login-namespace01.png
 .. image:: ../_static/operation-guide-auth-ldap-login-namespace02.png
 
--------------------------------------------------------
-Configure pod security policy for your own user profile
--------------------------------------------------------
+---------------------------------------------------
+Configure pod security policy for your user profile
+---------------------------------------------------
 
-Before starting to use Kubeflow, remember to configure the pod security policy for your own user profile in order to create pods. This is important as pod creation is needed for many Kubeflow functions, such as Notebook Server creation. 
+Before starting to use vSphere Enterprise Kubeflow, remember to configure the pod security policy for your user profile in order to create pods. This is important as pod creation is needed for many vSphere Enterprise Kubeflow functions, such as Notebook Server creation. 
 Refer to :ref:`configure pod security policy` for more details and instructions.
 
 ---------------
 Troubleshooting
 ---------------
 
-""""""""""""""""""""""""""""""""""""""""""""""
-Restrict specific LDAP users to login Kubeflow
-""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Restrict specific LDAP accounts to login to vSphere Enterprise Kubeflow
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Most of the time, we hope to specified LDAP users can login Kubeflow, not all LDAP users. Thus we need to add more filter restrictions when searching the directory. 
-As follow example, we only allow liuqi and juanl these 2 users to login Kubeflow. 
+Most of the time, you hope to specify some LDAP accounts can login to vSphere Enterprise Kubeflow, but not all LDAP accounts. Thus you need to add more filter restrictions when searching the directory. 
+As in the following example, you only allow ``user1`` and ``user2`` these 2 users to login to vSphere Enterprise Kubeflow. 
 
 .. code-block:: shell
 
@@ -163,7 +163,7 @@ As follow example, we only allow liuqi and juanl these 2 users to login Kubeflow
 Pod creation failure
 """"""""""""""""""""
 
-You may meet following error in some operation:
+You may meet the following error in some operation:
 
 .. code-block:: text
 
