@@ -19,19 +19,23 @@ The LLaMA model size this turorial uses is 7B. File size of the whole model is a
 Create a new Notebook Server on the vSphere Enterprise Kubeflow platform, 
 - Use a customized image that has Java and torchserve installed. You can create your own custom image or use an image published by us here:
     ```
-    projects.registry.vmware.com/models/llm/pytorch/torchserve-notebook:latest-gpu-v0.15 
+    projects.registry.vmware.com/models/llm/pytorch/torchserve-notebook:latest-gpu-v0.15
     ```
-- set 8 CPUs, 12GB memory, 1 GPU, 30GB disk space for this Notebook Server. 
+- set 8 CPUs, 12GB memory, 1 GPU, 40GB disk space for this Notebook Server. 
 Wait until the Notebook Server is created successfully.
 
 ### Step 2: Connect to the Notebook Server
-Connect to the Notebook Server. Open a Terminal, pull the code of this project.
+Connect to the Notebook Server. Open a Terminal window. Pull the code of this project by running
+    ```git clone https://github.com/elements-of-ai/kubeflow-docs.git```
+
+Then change directory to this llm_llama_deployment project in the kubeflow-docs\examples directory.
 
 ### Step 3: Download the LLaMA model files
 Download the LLaMA model files following the instructions in ```download_models.sh```
 
 ### Step 4: Generate the model package
 Generate the model package required by torchserve. Run ```gen_pkgs.sh```
+This step might take 10-20 minutes.
 
 ### Step 5: Install dependency
 Install the necessary dependency packages. Run
@@ -42,6 +46,7 @@ Install the necessary dependency packages. Run
 ## Start the inference service
 
 Run ```start_ts.sh``` to start the inference service with torchserve.
+It might take more than 10 minutes for the service to be ready. Open another terminal window, check the output of ```nvidia-smi```. If all the model files have been loaded into GPU memory (more than 14GB), the service should be ready.
 
 Run ```test.py``` to test the inference service. Modify test.py to try different prompts for your test.
 

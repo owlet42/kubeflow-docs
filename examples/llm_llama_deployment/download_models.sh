@@ -1,8 +1,8 @@
 #!/usr/bin/bash
 
 #
-# This script assumes that the LLaMA model files are availab on a http server.
-# If this is true, set correct model_size and download URLs and then run this script
+# This script assumes that the LLaMA model files are available on a http server.
+# If this is true, set correct model_size and download URLs and then run this script.
 # Otherwise, ignore this script. Use any possible way to download the model files,
 #   and make sure the file names and directory structure match the examples below.
 #
