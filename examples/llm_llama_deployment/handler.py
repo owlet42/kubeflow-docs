@@ -188,7 +188,7 @@ class LLAMAHandler(BaseHandler):
         prev_pos = 0
         for cur_pos in range(start_pos, total_len):
             print(f"------self.model:{next(self.model.parameters()).device}")
-            print(f"------tokens:{tokens.device}")
+#            print(f"------tokens:{tokens.device}")
             logits = self.model.forward(tokens[:, prev_pos:cur_pos], prev_pos)
             if temperature > 0:
                 probs = torch.softmax(logits / temperature, dim=-1)
