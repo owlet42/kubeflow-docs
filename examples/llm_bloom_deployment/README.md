@@ -1,18 +1,38 @@
-# Bloom: loading large Huggingface models with constrained resources using accelerate
+# BLOOM Deployment on Kubeflow with Torchserve and Kserve
 
-We dedicated on [bigscience/bloom-7b1](https://huggingface.co/bigscience/bloom-7b1) model for inference, and it's BigScience Large Open-science Open-access Multilingual Language Model.
+This tutorial guides you deploy the BLOOM model on the vSphere Enterprise Kubeflow platform with torchserve.
 
-This document briefs on serving large HG models with limited resource using accelerate. This option can be activated with `low_cpu_mem_usage=True`. The model is first created on the Meta device (with empty weights) and the state dict is then loaded inside it (shard by shard in the case of a sharded checkpoint).
+[BLOOM](https://huggingface.co/docs/transformers/model_doc/bloom) is the bigScience large open-science multilingual language Model. The architecture of BLOOM is essentially similar to GPT3 (auto-regressive model for next token prediction), but has been trained on 46 different languages and 13 programming languages, based on the transformer architecture.
 
-### Step 1: Create Notebook server on Kubeflow UI
+The BLOOM model comes in different sizes: 560m, 1B1, 1B7, 3B, 7B1, 176B parameters. The bigger the model size, the more GPU resources required for the deployment.
 
-Create a Notebook server in Kubeflow UI using resources: 8CPUs, 16Gi memory, 1GPU, 50G disk
+The BLOOM model size this turorial for torchserve uses is 7B1. File size of the whole model MAR package is about 25GB. 16G GPU, 28 CPU, 16G memory is required for this deployment.
 
-And select custom image, enter: `projects.registry.vmware.com/models/llm/pytorch/torchserve-notebook:latest-gpu-v0.15`
+## Setup
 
-It takes some time to make the notebook serving running. You can click `CONNECT` after the staus of notebook server shows running.
+### Prerequisite
 
-### Step 2: Download model
+- The vSphere Enterprise Kubeflow platform is ready for use.
+
+### 1. Create a Notebook server
+
+Create a new Notebook Server on the vSphere Enterprise Kubeflow platform, 
+- Use a customized image that has Java and torchserve installed. You can use [Dockerfile](https://github.com/elements-of-ai/kubeflow-docs/blob/main/examples/llm_bloom_deployment/Dockerfile) to generate your own custom image. You can also directly use an image published on VMware harbor repo:
+    ```
+    projects.registry.vmware.com/models/llm/pytorch/torchserve-notebook:latest-gpu-v0.15
+    ```
+- set 28 CPUs, 16GB memory, 1 GPU, 100GB disk space for this Notebook Server. 
+Wait until the Notebook Server is created successfully.
+
+### 2. Prepare MAR model package and it's config
+
+Clone this repo in the notebook and entry ``examples/llm_bloom_deployment/`` directory:
+
+```bash
+cd ./examples/llm_bloom_deployment/
+```
+
+#### 2.1 Download model
 
 ```bash
 python Download_model.py --model_name bigscience/bloom-7b1
@@ -23,22 +43,25 @@ The script prints the path where the model is downloaded as below.
 
 The downloaded model is around 14GB.
 
-### Step 2: Compress downloaded model
+#### 2.2 Compress downloaded model
 
-**_NOTE:_** Install Zip cli tool
+Install Zip cli tool
+
+```bash
+apt install zip
+```
 
 Navigate to the path got from the above script. In this example it is
 
 ```bash
 cd model/models--bigscience-bloom-7b1/snapshots/5546055f03398095e385d7dc625e636cc8910bf2/
-zip -r /home/ubuntu/serve/examples/Huggingface_Largemodels//model.zip *
-cd -
-
+zip -r ~/kubeflow-docs/examples/llm_bloom_deployment/model.zip *
+cd ~/kubeflow-docs/examples/llm_bloom_deployment # return to the `llm_bloom_deployment` directory.
 ```
 
-### Step 3: Generate MAR file
+#### 2.3 Generate MAR file
 
-Navigate up to `Huggingface_Largemodels` directory.
+Use the ``torch-model-archiver`` CLI to generate the model MAR file.
 
 ```bash
 torch-model-archiver --model-name bloom --version 1.0 --handler custom_handler.py --extra-files model.zip,setup_config.json -r requirements.txt
@@ -51,25 +74,25 @@ The MAR model package is around 25GB.
 - Recommended `max_memory` in `setup_config.json` is the max size of shard.
 - Refer: https://huggingface.co/docs/transformers/main_classes/model#large-model-loading
 
-**__Note__**: Install dependencies in advance, or torchserve start model always get timeout if you archiver model using `torch-model-archiver  --model-name bloom --version 1.0 --handler custom_handler.py --extra-files model.zip,setup_config.json -r requirements.txt`
+**__Note__**: Notice that add ``-r requirements.txt`` field when generate MAR file, that mean install dependencies firstly when start model using ``torchserve --start`` later.
 
-
-### Step 4: Add the mar file to model store
-
-```bash
-mkdir model_store
-mv bloom.mar model_store
-```
-
-### Step 5: Start torchserve
-
-Update config.properties and start torchserve
+#### 2.4 Add the mar file to model store
 
 ```bash
-torchserve --start --ncs --ts-config config.properties
+mv bloom.mar torchserve/model_store
 ```
 
-### Step 5: Run inference
+### 3. Start torchserve
+
+Update ``torchserve/config/config.properties``, especially notice that chanage ``model_store`` field to your model directory. Then start torchserve. 
+
+Suggestion: run ``torchserve --start`` command in the jupyter terminal, and you can see the detail logs directly about running model using torchserve. You can't see the whole logs if you run ``torchserve --start`` command in the jupyter notebook
+
+```bash
+torchserve --start --ncs --ts-config torchserve/config/config.properties
+```
+
+### 4. Run inference
 
 ```bash
 curl -v "http://localhost:8080/predictions/bloom" -T sample_text.txt
@@ -80,3 +103,8 @@ curl -v "http://localhost:8080/predictions/bloom" -T sample_text.txt
 Jupyter: XSRF cookie does not match POST
 
 Solution: https://stackoverflow.com/questions/44088615/jupyter-xsrf-cookie-does-not-match-post
+
+## Reference
+- [Loading large Huggingface models with constrained resources using accelerate](https://github.com/pytorch/serve/tree/master/examples/large_models/Huggingface_accelerate)
+
+- [TorchServe example with Huggingface BLOOM model](https://github.com/kserve/kserve/tree/master/docs/samples/v1beta1/torchserve/v1/bloom)
