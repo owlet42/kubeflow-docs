@@ -192,7 +192,7 @@ To uninstall the vSphere Enterprise Kubeflow package:
 
       kctrl package installed delete --package-install kubeflow
 
-When deleting the KvSphere Enterprise ubeflow package, some resources may get stuck at ``deleting`` status. To solve this problem:
+When deleting the vSphere Enterprise Kubeflow package, some resources may get stuck at ``deleting`` status. To solve this problem:
 
    .. code-block:: shell
 
