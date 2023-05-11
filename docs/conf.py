@@ -25,7 +25,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 html_favicon = "./_static/favicon.ico"
 # html_logo = "./_static/sphinx-needs-logo-white.png"
-html_title = "Kubeflow Enterprise Docs"
+html_title = "Freestone Kubeflow Docs"
 
 # material theme options (see theme.conf for more information)
 html_theme_options = {
