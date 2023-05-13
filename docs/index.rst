@@ -24,7 +24,7 @@ This documentation presents a comprehensive end-to-end workflow of using Freesto
 
 
 .. toctree::
-    :caption: Kubeflow Docs
+    :caption: Introduction
     :hidden:
 
     introduction/index
