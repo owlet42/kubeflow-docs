@@ -166,7 +166,7 @@ And to configure ``pod-security-policy``, run the following command on your clie
       name: rb-all-sa_ns-<namespace_name>
       namespace: <namespace_name>
     roleRef:
-      ind: ClusterRole
+      kind: ClusterRole
       name: psp:vmware-system-privileged
       apiGroup: rbac.authorization.k8s.io
     subjects:
