@@ -24,6 +24,8 @@ For the deployment on TKGS clusters, Freestone Kubeflow is installed on a Tanzu 
 
 - To connect to the cluster from your client host, see `Connect to a Tanzu Kubernetes Cluster as a vCenter Single Sign-On User <https://docs.vmware.com/en/VMware-vSphere/7.0/vmware-vsphere-with-tanzu/GUID-AA3CA6DC-D4EE-47C3-94D9-53D680E43B60.html>`__.
 
+- Install Kapp-controller. The Carvel package manager Kapp-controller is shipped with unified TKG preinstalled. Run command ``kubectl get pod -A | grep kapp-controller`` to double check if kapp-controller is running in your environment. (You should see a pod whose name starts with "kapp-controller".) Otherwise, if you do not have kapp-controller running in your environment, `install one release version <https://github.com/carvel-dev/kapp-controller/releases>__`.
+
 - Install ``kctrl``, a kapp-controller's native CLI on your client host. It is used to install  Freestone Kubeflow Carvel Package. See `Installing kapp-controller CLI: kctrl <https://carvel.dev/kapp-controller/docs/v0.40.0/install/#installing-kapp-controller-cli-kctrl>`__.
 
 Deploy Freestone Kubeflow package on TKGS clusters
