@@ -31,7 +31,7 @@ html_title = "Freestone Kubeflow Docs"
 html_theme_options = {
     "site_url": "https://elements-of-ai.github.io/kubeflow-docs/",
     "repo_url": "https://github.com/elements-of-ai/kubeflow-docs",
-    "repo_name": "Kubeflow Docs",
+    "repo_name": "Freestone Kubeflow Docs",
     "repo_type": "github",
     "edit_uri": "blob/master/docs",
     "globaltoc_collapse": True,

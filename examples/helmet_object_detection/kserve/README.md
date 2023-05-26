@@ -250,7 +250,7 @@ $ kubectl get inferenceservice helmet-detection-serving -o jsonpath='{.status.ur
 
 ```
 
-Use your web browser to login to Kubeflow, and get Cookies: authservice_session (Chrome: Developer Tools -> Applications -> Cookies)
+Use your web browser to login to Freestone Kubeflow, and get Cookies: authservice_session (Chrome: Developer Tools -> Applications -> Cookies)
 
 
 #### Test model prediction¶
@@ -258,7 +258,7 @@ Use your web browser to login to Kubeflow, and get Cookies: authservice_session 
 Run the following cell to do model prediction in the notebook server.
 
 ```bash 
- # replace it with the url you used to access Kubeflow
+ # replace it with the url you used to access Freestone Kubeflow
     bot = Test_bot(uri='http://10.117.233.8',
                 model='helmet_detection',
                 # replace it with what is printed above

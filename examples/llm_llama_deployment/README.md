@@ -1,4 +1,4 @@
-# LLaMA Deployment on Kubeflow with Torchserve
+# LLaMA Deployment on Freestone Kubeflow with Torchserve
 
 This tutorial guides you deploy the LLaMA model on the Freestone Kubeflow platform with torchserve.
 

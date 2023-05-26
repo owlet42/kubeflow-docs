@@ -142,9 +142,9 @@ if __name__ == '__main__':
 
 Following our notebook, you should be able to see a file called `helmet_detection_pipeline.yaml`. So here we provide you with a brief guide on how to execute a pipeline. 
 
-### Upload the pipeline to Kubeflow UI 
+### Upload the pipeline to Freestone Kubeflow UI 
 
-Once you have the compiled YAML file, download it. In Kubeflow UI , go to pipelines dashaborad by clicking the “Pipelines” on the left-side toolbar. And then click the “Upload Pipeline” button.
+Once you have the compiled YAML file, download it. In Freestone Kubeflow UI , go to pipelines dashaborad by clicking the “Pipelines” on the left-side toolbar. And then click the “Upload Pipeline” button.
 
 ![Image text](https://github.com/harperjuanl/kubeflow-examples/blob/main/helmet_detection/pipelines/imgs/helmet-pipeline-01.png)
 ![Image text](https://github.com/harperjuanl/kubeflow-examples/blob/main/helmet_detection/pipelines/imgs/helmet-pipeline-02.png)
