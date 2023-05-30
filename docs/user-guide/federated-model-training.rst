@@ -19,6 +19,29 @@ This tutorial provides a step-by-step guide on utilizing FATE for federated lear
 Get Started
 -----------
 
+Get source code
+
+.. code-block:: shell
+
+  git clone https://github.com/kubeflow/fate-operator.git
+  cd fate-operator
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Deploy the fate-operator CRDs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+  kustomize build config/crd | kubectl apply -f -
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Deploy the fate-operator controller-manager 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: shell
+
+  kustomize build config/default | kubectl apply -f -
+
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Deploy the FATE cluster 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -157,16 +180,15 @@ Deploy kubefate, here is the v1.3.0 version of kubefate
       - name: FATECLOUD_LOG_NOCOLOR
         value: "true"
         
-    EOF
+  EOF
 
 Check kubefate status
 
 .. code-block:: shell
 
-  kubectl get Kubefate
-
-  NAME                              READY   STATUS    RESTARTS   AGE
-  kubefate-sample-7b5f9f9f5f-4q9q4   1/1     Running   0          2m
+  kubectl get Kubefate -n kube-fate
+  NAME              INGRESSDOMAIN   STATUS
+  kubefate-sample   kubefate.net    Running
 
 ++++++++++++++++++++++++++++++
 2. Install FATE
@@ -359,10 +381,9 @@ Check FATE cluster status
 
 .. code-block:: shell
 
-  kubectl get fate 
-
-  NAME                 READY   STATUS    RESTARTS   AGE
-  fatecluster-sample   1/1     Running   0          2m
+  kubectl get fatecluster -n fate-9999
+  NAME                 PARTYID   STATUS
+  fatecluster-sample   9999      Running
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -390,8 +411,10 @@ In typical scenarios, leveraging the fateclient provides a more user-friendly ap
 .. code-block:: shell
 
   kubectl get ingress -n fate-9999
+  NAMESPACE   NAME        CLASS    HOSTS                         ADDRESS   PORTS   AGE
+  fate-9999   fateboard   <none>   9999.fateboard.kubefate.net             80      13m
+  fate-9999   notebook    <none>   9999.notebook.kubefate.net              80      13m
 
-# TODO： add ingress information
 
 By executing the aforementioned commands, you can retrieve the access address for the fateclient. Open the fateclient in your web browser and proceed to create a notebook page.
 
