@@ -8,16 +8,39 @@ Introduction
 
 Federated Learning is a machine learning technique where algorithms are trained across multiple distributed edge devices or servers, each having its own local data samples.
 
-FATE (Federated AI Technology Enabler) is the world's pioneering open-source framework for industrial-grade federated learning. It empowers businesses and institutions to collaborate on data while prioritizing the safety and privacy of the data involved. The FATE project leverages cutting-edge technologies such as Multi-Party Computation (MPC) and Homomorphic Encryption (HE) to build a robust and secure computing protocol, enabling a wide range of secure machine learning tasks, including logistic regression, tree-based algorithms, deep learning, and transfer learning, among others.
+`FATE`_ (Federated AI Technology Enabler) is the world's pioneering open-source framework for industrial-grade federated learning. It empowers businesses and institutions to collaborate on data while prioritizing the safety and privacy of the data involved. The FATE project leverages cutting-edge technologies such as Multi-Party Computation (MPC) and Homomorphic Encryption (HE) to build a robust and secure computing protocol, enabling a wide range of secure machine learning tasks, including logistic regression, tree-based algorithms, deep learning, and transfer learning, among others.
+
+.. _FATE: https://github.com/FederatedAI/FATE
+
+`KubeFATE`_ is a solution that allows running FATE in containerized environments. It offers the capability to deploy FATE clusters with just one click, while also providing features to monitor the status of running FATE clusters, view logs, and perform version upgrades.
+
+.. _KubeFATE: https://github.com/FederatedAI/KubeFATE
+
+FATE-Job is a task management tool specifically designed for FATE. It facilitates the submission and querying of FATE tasks through the use of the Kubernetes API.
+
+FATE-Operator_ simplifies the deployment of KubeFATE, FATE, and FATE-Job into Kubernetes clusters. It has been seamlessly integrated into Freestone Kubeflow, enabling effortless utilization within the platform.
+
+.. _FATE-Operator: https://github.com/kubeflow/fate-operator
 
 This tutorial provides a step-by-step guide on utilizing FATE for federated learning on a Kubeflow cluster.
 
 - **Cluster Deployment: Setting up the FATE cluster.**
-- **Federated Learning with FATE: Harnessing the power of the FATE cluster for federated learning.**
+- **Federated Learning with FATE: Initial federated training on the deployed FATE cluster.**
 
------------
-Get Started
------------
+--------------
+Prerequisites
+--------------
+
+- Freestone Kubeflow v1.6.1
+- Already deployed other federated FATE clusters
+
+-------------------
+Cluster Deployment
+-------------------
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Deploy the FATE-Operator 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Get source code
 
@@ -26,17 +49,14 @@ Get source code
   git clone https://github.com/kubeflow/fate-operator.git
   cd fate-operator
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Deploy the fate-operator CRDs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Deploy the FATE-Operator CRDs
 
 .. code-block:: shell
 
   kustomize build config/crd | kubectl apply -f -
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Deploy the fate-operator controller-manager 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Deploy the FATE-Operator controller-manager 
 
 .. code-block:: shell
 
@@ -130,7 +150,7 @@ Deploy kubefate, here is the v1.3.0 version of kubefate
     namespace: kube-fate
   spec:
     # kubefate image tag
-    image: federatedai/kubefate:v1.3.0
+    image: federatedai/kubefate:v1.4.0
     # ingress host
     ingressDomain: kubefate.net
     # serviceAccountName
@@ -387,7 +407,7 @@ Check FATE cluster status
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Run a FATE job for training
+Federated Learning with FATE
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You have two options for running FATE training tasks: either by submitting them using the "fate-job" command or by utilizing the "fateclient" with FATE pipeline. Both approaches offer convenient ways to execute and manage your FATE training tasks seamlessly.
