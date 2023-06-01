@@ -8,21 +8,21 @@ Introduction
 
 Federated Learning is a machine learning technique where algorithms are trained across multiple distributed edge devices or servers, each having its own local data samples.
 
-`FATE`_ (Federated AI Technology Enabler) is the world's pioneering open-source framework for industrial-grade federated learning. It empowers businesses and institutions to collaborate on data while prioritizing the safety and privacy of the data involved. The FATE project leverages cutting-edge technologies such as Multi-Party Computation (MPC) and Homomorphic Encryption (HE) to build a robust and secure computing protocol, enabling a wide range of secure machine learning tasks, including logistic regression, tree-based algorithms, deep learning, and transfer learning, among others.
+- `FATE`_ (Federated AI Technology Enabler) is the world's pioneering open-source framework for industrial-grade federated learning. It empowers businesses and institutions to collaborate on data while prioritizing the safety and privacy of the data involved. The FATE project leverages cutting-edge technologies such as Multi-Party Computation (MPC) and Homomorphic Encryption (HE) to build a robust and secure computing protocol, enabling a wide range of secure machine learning tasks, including logistic regression, tree-based algorithms, deep learning, and transfer learning, among others.
 
 .. _FATE: https://github.com/FederatedAI/FATE
 
-`KubeFATE`_ is a solution that allows running FATE in containerized environments. It offers the capability to deploy FATE clusters with just one click, while also providing features to monitor the status of running FATE clusters, view logs, and perform version upgrades.
+- `KubeFATE`_ is a solution that allows running FATE in containerized environments. It offers the capability to deploy FATE clusters with just one click, while also providing features to monitor the status of running FATE clusters, view logs, and perform version upgrades.
 
 .. _KubeFATE: https://github.com/FederatedAI/KubeFATE
 
-FATE-Job is a task management tool specifically designed for FATE. It facilitates the submission and querying of FATE tasks through the use of the Kubernetes API.
+- FATE-Job is a task management tool specifically designed for FATE. It facilitates the submission and querying of FATE tasks through the use of the Kubernetes API.
 
-FATE-Operator_ simplifies the deployment of KubeFATE, FATE, and FATE-Job into Kubernetes clusters. It has been seamlessly integrated into Freestone Kubeflow, enabling effortless utilization within the platform.
+FATE-Operator_ simplifies the deployment of FATE, KubeFATE and FATE-Job into Kubernetes clusters. It has been integrated into Freestone Kubeflow, facilitating effortless utilization within the platform.
 
 .. _FATE-Operator: https://github.com/kubeflow/fate-operator
 
-This tutorial provides a step-by-step guide on utilizing FATE for federated learning on a Kubeflow cluster.
+This tutorial offers a comprehensive, step-by-step guide for demonstrating the usage of FATE-Operator on a Freestone Kubeflow cluster:
 
 - **Cluster Deployment: Setting up the FATE cluster.**
 - **Federated Learning with FATE: Initial federated training on the deployed FATE cluster.**
@@ -32,7 +32,7 @@ Prerequisites
 --------------
 
 - Freestone Kubeflow v1.6.1
-- Already deployed other federated FATE clusters
+- Deployed an additional FATE cluster with the ID 10000 or set both collaborative parties to 9999 (refer to the comments in the code example).
 
 -------------------
 Cluster Deployment
@@ -214,7 +214,7 @@ Check kubefate status
 2. Install FATE
 ++++++++++++++++++++++++++++++
 
-To establish a FATE Cluster, we will utilize FATE version 1.5.1. By removing comments in the YAML file, you can easily configure the parameters of the FATE Cluster, enabling seamless connections with other FATE Clusters. This interconnected network forms the foundation of federated learning, empowering collaborative learning across distributed nodes.
+To establish a FATE Cluster, we use FATE version 1.5.1. By removing comments in the YAML file, you can easily configure the parameters of the FATE Cluster, enabling seamless connections with other FATE Clusters. This interconnected network forms the foundation of federated learning, empowering collaborative learning across distributed nodes.
 
 .. code-block:: shell
   
@@ -410,23 +410,26 @@ Check FATE cluster status
 Federated Learning with FATE
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You have two options for running FATE training tasks: either by submitting them using the "fate-job" command or by utilizing the "fateclient" with FATE pipeline. Both approaches offer convenient ways to execute and manage your FATE training tasks seamlessly.
+There are two options for running FATE training tasks: either by submitting them using the "fate-job" command or by using the "fateclient" with FATE pipeline. Both approaches provide convenient ways to execute and manage your FATE training tasks.
 
 +++++++++++++
 fate-job
 +++++++++++++
 
+To start a FATE training task, you can execute the following commands. The specifics of the task, such as the pipeline and modules configuration, can be customized within the "pipeline" and "modulesConf" sections of the "fate_v1alpha1_fatejob.yaml" file.
+
 .. code-block:: shell
 
   kubectl apply -f https://raw.githubusercontent.com/kubeflow/fate-operator/master/config/samples/app_v1beta1_fatejob.yaml
 
-To initiate a FATE training task, you can employ the provided commands. The specifics of the task, such as the pipeline and modules configuration, can be customized within the "pipeline" and "modulesConf" sections of the "fate_v1alpha1_fatejob.yaml" file.
 
 +++++++++++++
 fateclient
 +++++++++++++
 
-In typical scenarios, leveraging the fateclient provides a more user-friendly approach to define and submit FATE tasks. This streamlined process offers convenience and ease-of-use when configuring and initiating FATE jobs.
+During the model experimentation phase, leveraging the fateclient offers a user-friendly approach to define and submit FATE tasks. This streamlined process provides convenience and ease-of-use when configuring and starting FATE jobs.
+
+To obtain the Jupyter Notebook URL, you can use the following command which is already installed fateclient.
 
 .. code-block:: shell
 
@@ -436,8 +439,6 @@ In typical scenarios, leveraging the fateclient provides a more user-friendly ap
   fate-9999   notebook    <none>   9999.notebook.kubefate.net              80      13m
 
 
-By executing the aforementioned commands, you can retrieve the access address for the fateclient. Open the fateclient in your web browser and proceed to create a notebook page.
-
 Initiate the pipeline to establish connectivity with fateflow.
 
 .. code-block:: python
@@ -446,7 +447,7 @@ Initiate the pipeline to establish connectivity with fateflow.
 
 Before proceeding, ensure that all participants have uploaded their respective data to FATE. Once this is done, follow the steps outlined in the notebook page:
 
-The guest party should upload their data. You can utilize the provided sample file, "breast_hetero_guest.csv," and replace it with your own dataset.
+The guest party should upload their data. You can use the provided sample file, "breast_hetero_guest.csv," and replace it with your own dataset.
 
 .. code-block:: python
 
@@ -487,7 +488,7 @@ The host party should upload their data. Use the provided example file, "breast_
   from pipeline.backend.pipeline import PipeLine
   from pipeline.utils.tools import load_job_config
 
-  host = 10000
+  host = 10000 # Please change to 9999 if only one party is deployed
   data_base = "/data/projects/fate/"
 
   # partition for data storage
@@ -511,7 +512,7 @@ The host party should upload their data. Use the provided example file, "breast_
 
 
 
-Utilize the FATE pipeline to create a federated training task specifically for homo-lr. This will enable you to perform federated learning using the homomorphic logistic regression (homo-lr) algorithm.
+Use the FATE pipeline to create a federated training task specifically for homo-lr. This will enable you to perform federated learning using the homomorphic logistic regression (homo-lr) algorithm.
 
 .. code-block:: python
 
@@ -529,8 +530,8 @@ Utilize the FATE pipeline to create a federated training task specifically for h
 
   # obtain config
   guest = 9999
-  host = 10000
-  arbiter = 10000
+  host = 10000 # Please change to 9999 if only one party is deployed
+  arbiter = 9999 
 
   guest_train_data = {"name": "breast_homo_guest", "namespace": f"experiment"}
   host_train_data = {"name": "breast_homo_host", "namespace": f"experiment"}
