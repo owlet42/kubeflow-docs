@@ -447,7 +447,7 @@ Initiate the pipeline to establish connectivity with fateflow.
 
 Before proceeding, ensure that all participants have uploaded their respective data to FATE. Once this is done, follow the steps outlined in the notebook page:
 
-The guest party should upload their data. You can use the provided sample file, "breast_hetero_guest.csv," and replace it with your own dataset.
+The guest party should upload their data. You can use the provided sample file, "breast_homo_guest.csv," and replace it with your own dataset.
 
 .. code-block:: python
 
@@ -463,13 +463,13 @@ The guest party should upload their data. You can use the provided sample file, 
   partition = 4
 
   # table name and namespace, used in FATE job configuration
-  dense_data = {"name": "breast_hetero_guest", "namespace": f"experiment"}
+  dense_data = {"name": "breast_homo_guest", "namespace": f"experiment"}
 
   pipeline_upload = PipeLine().set_initiator(role="guest", party_id=guest).set_roles(guest=guest)
 
   # add upload data info
   # path to csv file(s) to be uploaded
-  pipeline_upload.add_upload_data(file=os.path.join(data_base, "examples/data/breast_hetero_guest.csv"),
+  pipeline_upload.add_upload_data(file=os.path.join(data_base, "examples/data/breast_homo_guest.csv"),
                                   table_name=dense_data["name"],             # table name
                                   namespace=dense_data["namespace"],         # namespace
                                   head=1, partition=partition,               # data info
@@ -479,7 +479,7 @@ The guest party should upload their data. You can use the provided sample file, 
   pipeline_upload.upload(drop=1)
 
 
-The host party should upload their data. Use the provided example file, "breast_hetero_host.csv," and replace it with your own dataset.
+The host party should upload their data. Use the provided example file, "breast_homo_host.csv," and replace it with your own dataset.
 
 .. code-block:: python
 
@@ -495,13 +495,13 @@ The host party should upload their data. Use the provided example file, "breast_
   partition = 4
 
   # table name and namespace, used in FATE job configuration
-  dense_data = {"name": "breast_hetero_host", "namespace": f"experiment"}
+  dense_data = {"name": "breast_homo_host", "namespace": f"experiment"}
 
   pipeline_upload = PipeLine().set_initiator(role="host", party_id=host).set_roles(host=host)
 
   # add upload data info
   # path to csv file(s) to be uploaded
-  pipeline_upload.add_upload_data(file=os.path.join(data_base, "examples/data/breast_hetero_host.csv"),
+  pipeline_upload.add_upload_data(file=os.path.join(data_base, "examples/data/breast_homo_host.csv"),
                                   table_name=dense_data["name"],             # table name
                                   namespace=dense_data["namespace"],         # namespace
                                   head=1, partition=partition,               # data info
